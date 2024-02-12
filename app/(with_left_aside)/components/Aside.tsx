@@ -30,7 +30,7 @@ export const Aside = async () => {
 
 	return (
 		<aside className="sticky min-h-screen top-0 md:w-1/5 lg:w-1/6 z-49 flex flex-col border-r pb-4 pr-2 md:pr-4">
-			<div className="sticky top-4 sm:top-8 mb-2">
+			<div className="sticky top-0 pt-4 sm:pt-8 mb-2">
 				<Logo className="mb-4" />
 				<nav className="flex flex-col gap-1">
 					<Link href="/" {...buttonStyle}>
