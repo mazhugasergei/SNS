@@ -14,18 +14,18 @@ export const Aside = async () => {
 	const pfp = (await User.findById(authId, "pfp"))?.pfp
 
 	const buttonStyle = {
-		className: `min-h-[2.25rem] flex max-md:justify-center items-center gap-2 hover:bg-accent text-center text-sm font-medium rounded-md transition p-2 md:px-4`
+		className: `min-h-[2.25rem] flex max-md:justify-center items-center gap-2 hover:bg-accent text-center text-sm font-medium rounded-md transition p-2 md:px-4`,
 	}
 
 	const iconStyle = {
 		style: {
 			width: "1rem",
-			height: "1rem"
-		}
+			height: "1rem",
+		},
 	}
 
 	const titleStyle = {
-		className: "max-md:hidden"
+		className: "max-md:hidden",
 	}
 
 	return (

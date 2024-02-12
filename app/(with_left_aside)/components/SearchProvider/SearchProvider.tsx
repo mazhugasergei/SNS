@@ -14,7 +14,7 @@ type User = {
 
 export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
 	const [searchOpen, setSearchOpen] = useState(false)
-	const [value, setValue] = useState<string>()
+	const [value, setSearchValue] = useState<string>()
 	const [defaultUsers, setDefaultUsers] = useState<User[]>()
 	const [users, setUsers] = useState<User[]>()
 	const [pending, setPending] = useState(false)
@@ -29,18 +29,20 @@ export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
 		})
 	}, [])
 
-	// getting users
 	useEffect(() => {
 		clearTimeout(timeout.current)
 		if (value) {
 			setPending(true)
-			timeout.current = setTimeout(async () => {
-				await searchUsers(value).then((res) => {
+			timeout.current = setTimeout(() => {
+				searchUsers(value).then((res) => {
 					setUsers(res)
 					setPending(false)
 				})
-			}, 500)
-		} else setUsers(undefined)
+			}, 200)
+		} else {
+			setUsers(undefined)
+			setPending(false)
+		}
 	}, [value])
 
 	const categoryClasses = `
@@ -69,7 +71,7 @@ export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
 	useEffect(() => {
 		if (!searchOpen) {
 			setTimeout(() => {
-				setValue(undefined)
+				setSearchValue(undefined)
 				setUsers(undefined)
 				defaultUsers && setPending(false)
 				clearTimeout(timeout.current)
@@ -83,57 +85,51 @@ export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
 				{children}
 			</div>
 			<CommandDialog open={searchOpen} onOpenChange={setSearchOpen}>
-				<CommandInput placeholder="Type to search..." onValueChange={setValue} />
+				<CommandInput placeholder="Type to search..." onValueChange={setSearchValue} />
 				<div className="px-2 py-1">
-					{" "}
-					{
-						// Loading...
-						pending ? (
-							<p className="text-center">loading...</p>
-						) : // Searching...
-						value ? (
-							// No results
-							!users?.length ? (
-								<p className="text-center">No results found.</p>
-							) : (
-								// Yes results
-								<>
-									<p className={categoryClasses}>People</p>
-									{users.map((user) => (
-										<Link
-											href={`/${user.username}`}
-											className={itemClasses}
-											onClick={() => handleItemClick([user._id])}
-											key={user.username}
-										>
-											<UserAvatar src={user.pfp || ""} className="w-7 h-7" />
-											{user.fullname}
-											<span className="opacity-[.7] text-xs">{user.username}</span>
-										</Link>
-									))}
-								</>
-							)
-						) : (
-							// Default values
-							defaultUsers && (
-								<>
-									<p className={categoryClasses}>People</p>
-									{defaultUsers.map((user) => (
-										<Link
-											href={`/${user.username}`}
-											className={itemClasses}
-											onClick={() => handleItemClick([user._id])}
-											key={user.username}
-										>
-											<UserAvatar src={user.pfp || ""} className="w-7 h-7" />
-											{user.fullname}
-											<span className="opacity-[.7] text-xs">{user.username}</span>
-										</Link>
-									))}
-								</>
-							)
-						)
-					}{" "}
+					{/* Loading... */}
+					{pending && <p className="text-center">loading...</p>}
+
+					{/* No value */}
+					{!pending && !value && defaultUsers && (
+						<>
+							<p className={categoryClasses}>People</p>
+							{defaultUsers.map((user) => (
+								<Link
+									href={`/${user.username}`}
+									className={itemClasses}
+									onClick={() => handleItemClick([user._id])}
+									key={user.username}
+								>
+									<UserAvatar src={user.pfp || ""} className="w-7 h-7" />
+									{user.fullname}
+									<span className="opacity-[.7] text-xs">{user.username}</span>
+								</Link>
+							))}
+						</>
+					)}
+
+					{/* No results */}
+					{!pending && value && !users?.length && <p className="text-center">No results found.</p>}
+
+					{/* Yes results */}
+					{!pending && value && !!users?.length && (
+						<>
+							<p className={categoryClasses}>People</p>
+							{users.map((user) => (
+								<Link
+									href={`/${user.username}`}
+									className={itemClasses}
+									onClick={() => handleItemClick([user._id])}
+									key={user.username}
+								>
+									<UserAvatar src={user.pfp || ""} className="w-7 h-7" />
+									{user.fullname}
+									<span className="opacity-[.7] text-xs">{user.username}</span>
+								</Link>
+							))}
+						</>
+					)}
 				</div>
 			</CommandDialog>
 		</>

@@ -18,7 +18,7 @@ export const signUp = async (email: string, username: string, fullname: string, 
 	})
 
 	// create verification url code
-	const verification_code = await bcrypt.hash(
+	const verificationCode = await bcrypt.hash(
 		Math.floor(Math.random() * 10000)
 			.toString()
 			.padStart(4, "0"),
@@ -27,12 +27,12 @@ export const signUp = async (email: string, username: string, fullname: string, 
 
 	// create user object
 	const user = {
-		_id: new mongoose.Types.ObjectId(),
+		_id: new mongoose.Types.ObjectId().toString(),
 		email,
 		username,
 		fullname,
 		password: await bcrypt.hash(password, 12),
-		verification_code
+		verificationCode
 	}
 
 	// create transporter
@@ -56,8 +56,8 @@ export const signUp = async (email: string, username: string, fullname: string, 
             <img src="${process.env.LOGO}" width="80" />
           </a>
           <div style="font-size: 2rem; font-weight: 700; margin: 1rem 0 .75rem;">Verify your email</div>
-          <div>Click the button below to verify your email on Wave, it helps to ensure that your account is secure. Please note that if you do not verify the email during 1 hour, your account will be deleted permanently. If you did not initiate this verification process, please ignore this email. However, if you suspect any unauthorized access to your account, please contact our <a href="mailto:ghbdtnghbdtn8@gmail.com" style="color: #0f172a; font-weight: bold; text-decoration: underline;">support team</a> immediately.</div>
-          <a href="http://localhost:3000/verification?_id=${user._id}&code=${verification_code}" style="max-width: 10rem; display: block; text-align: center; text-decoration: none; color: #fafafa; font-weight: 500; background: #18181b; border-radius: .375rem; box-shadow: 0 .0625rem .1875rem 0 rgba(0, 0, 0, .1), 0 .0625rem .125rem -0.0625rem rgba(0, 0, 0, .1); padding: .5rem 1rem; margin: 1rem auto 0;">Verify my email</a>
+          <div>Click the button below to verify your email on Wave, it helps to ensure that your account is secure. Please note that if you do not verify the email during 1 hour, your account will be deleted permanently. If you did not initiate this verification process, please ignore this email. However, if you suspect any unauthorized access to your account, please contact our <a href="mailto:${process.env.EMAIL}" style="color: #0f172a; font-weight: bold; text-decoration: underline;">support team</a> immediately.</div>
+          <a href="${process.env.URL}/verification?_id=${user._id}&code=${verificationCode}" style="max-width: 10rem; display: block; text-align: center; text-decoration: none; color: #fafafa; font-weight: 500; background: #18181b; border-radius: .375rem; box-shadow: 0 .0625rem .1875rem 0 rgba(0, 0, 0, .1), 0 .0625rem .125rem -0.0625rem rgba(0, 0, 0, .1); padding: .5rem 1rem; margin: 1rem auto 0;">Verify my email</a>
         </div>
       </body>
     `
@@ -70,7 +70,7 @@ export const signUp = async (email: string, username: string, fullname: string, 
 	const token = jwt.sign({ _id: user._id, password: user.password }, process.env.JWT_SECRET || "", { expiresIn: "30d" })
 
 	// save token
-	cookies().set("token", token, { expires: new Date(new Date().getTime() + 2592000000) })
+	cookies().set("token", token, { expires: new Date(Date.now() + 2592000000) })
 
 	return { ok: true }
 }

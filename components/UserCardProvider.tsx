@@ -1,32 +1,30 @@
 import Link from "next/link"
-import { UserAvatar } from "../app/(main)/components/UserAvatar"
+import { UserAvatar } from "../app/(with_left_aside)/components/UserAvatar"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { getAuthId } from "@/actions/getAuthId"
-import User from "@/models/User"
 
-type User = {
+interface IUser {
 	_id: string
 	username: string
 	fullname: string
-	pfp?: string | null
-	bio?: string | null
+	pfp?: string
+	bio?: string
 }
 
-export default async ({ user, children }: { user: User; children: React.ReactNode }) => {
+export default async ({ user, children }: { user: IUser; children: React.ReactNode }) => {
 	const authId = await getAuthId()
 
 	return (
 		<HoverCard>
 			<HoverCardTrigger asChild>{children}</HoverCardTrigger>
 			<HoverCardContent className="relative w-80">
-				{authId ? (
-					authId !== user._id && <Button className="absolute top-4 right-4">Follow</Button>
-				) : (
+				{!authId && (
 					<Link href="/log-in" className={`${buttonVariants()} absolute top-4 right-4`}>
 						Follow
 					</Link>
 				)}
+				{authId !== user._id && <Button className="absolute top-4 right-4">Follow</Button>}
 				<div className="space-y-2">
 					<Link href={`/${user.username}`} className="inline-block hover:brightness-[.85] transition mb-1">
 						<UserAvatar src={user.pfp || ""} />

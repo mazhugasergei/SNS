@@ -5,6 +5,10 @@ delete models["user"]
 export default model(
 	"user",
 	new Schema({
+		_id: {
+			type: String,
+			required: true
+		},
 		username: {
 			type: String,
 			required: true
@@ -17,15 +21,22 @@ export default model(
 			type: String,
 			required: true
 		},
-		password: String,
+		password: {
+			type: String,
+			required: true
+		},
 		bio: String,
 		pfp: String,
+		banner: String,
 		verificationCode: String,
 		privateEmail: {
 			type: Boolean,
 			default: false
 		},
-		lastUsernameUpdate: Date,
+		lastUsernameUpdate: {
+			type: Date,
+			default: Date.now
+		},
 		friends: [String],
 		created: {
 			type: Date,

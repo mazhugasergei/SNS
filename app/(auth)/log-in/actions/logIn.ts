@@ -12,8 +12,8 @@ export const logIn = async (email: string, password: string) => {
 	const user = await User.findOne(username ? { username } : { email })
 	if (!user) throw "[email]: User doesn't exist"
 	// check if the password is correct
-	const isValid = await bcrypt.compare(password, user.password)
-	if (!isValid) throw "[password]: Incorrect password"
+	const valid = await bcrypt.compare(password, user.password)
+	if (!valid) throw "[password]: Incorrect password"
 
 	// create token
 	const token = jwt.sign({ _id: user._id, password: user.password }, process.env.JWT_SECRET || "", { expiresIn: "30d" })
