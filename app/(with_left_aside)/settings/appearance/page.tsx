@@ -5,33 +5,25 @@ import { useForm } from "react-hook-form"
 import zod from "zod"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form"
 import { Switch } from "@/components/ui/switch"
-import { toast } from "@/components/ui/use-toast"
 import { useTheme } from "next-themes"
 
 export default () => {
 	const { theme, setTheme } = useTheme()
 
 	const FormSchema = zod.object({
-		dark_theme: zod.boolean(),
+		darkTheme: zod.boolean(),
 	})
 
 	const form = useForm<zod.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
-			dark_theme: theme === "dark" ? true : false,
+			darkTheme: theme === "dark" ? true : false,
 		},
 	})
 
-	const onSubmit = (data: zod.infer<typeof FormSchema>) => {
-		toast({
-			title: "Changes were saved",
-			description: <div>Niceeeeee!</div>,
-		})
-	}
-
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+			<form className="space-y-6">
 				{/* <div>
           <h3 className="text-lg font-medium">Appearance</h3>
           <p className="text-sm text-muted-foreground">Customize the appearance of the app.</p>
@@ -41,7 +33,7 @@ export default () => {
 				{/* dark theme */}
 				<FormField
 					control={form.control}
-					name="dark_theme"
+					name="darkTheme"
 					render={({ field }) => {
 						return (
 							<FormItem
@@ -59,7 +51,6 @@ export default () => {
 						)
 					}}
 				/>
-				{/* <Button>Submit</Button> */}
 			</form>
 		</Form>
 	)
