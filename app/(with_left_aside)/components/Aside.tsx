@@ -50,7 +50,7 @@ export const Aside = async () => {
 						</button>
 					</SearchProvider>
 
-					<Link href={`/${username}` || "/log-in"} {...buttonStyle}>
+					<Link href={`/${username ?? "log-in"}`} {...buttonStyle}>
 						<LuUser2 {...iconStyle} />
 						<span {...titleStyle}>Profile</span>
 					</Link>

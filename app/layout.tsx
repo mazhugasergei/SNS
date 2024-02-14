@@ -12,7 +12,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
 	title: "Wave",
-	description: "Mazhuga Sergei's SNS graduation thesis"
+	description: "Mazhuga Sergei's SNS graduation thesis",
 }
 
 export default ({ children }: { children: React.ReactNode }) => {

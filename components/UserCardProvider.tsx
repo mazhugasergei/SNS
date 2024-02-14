@@ -8,8 +8,8 @@ interface IUser {
 	_id: string
 	username: string
 	fullname: string
-	pfp?: string
-	bio?: string
+	pfp?: string | null
+	bio?: string | null
 }
 
 export default async ({ user, children }: { user: IUser; children: React.ReactNode }) => {

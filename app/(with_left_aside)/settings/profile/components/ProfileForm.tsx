@@ -22,9 +22,9 @@ interface IUser {
 	email: string
 	username: string
 	fullname: string
-	bio?: string
-	banner?: string
-	pfp?: string
+	bio?: string | null
+	banner?: string | null
+	pfp?: string | null
 	privateEmail: boolean
 	created: Date
 }

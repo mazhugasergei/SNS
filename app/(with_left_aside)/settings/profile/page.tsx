@@ -7,7 +7,7 @@ export default async () => {
 	const authId = await getAuthId()
 	if (!authId) redirect("/settings/appearance")
 
-	const user = await User.findById(authId).lean()
+	const user = await User.findById(authId)
 	if (!user) throw "User not found"
 
 	return <ProfileForm {...{ user }} />
