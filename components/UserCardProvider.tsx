@@ -1,8 +1,11 @@
+"use client"
+
 import Link from "next/link"
 import { UserAvatar } from "../app/(with_left_aside)/components/UserAvatar"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { getAuthId } from "@/actions/getAuthId"
+import { useEffect, useState } from "react"
 
 interface IUser {
 	_id: string
@@ -12,8 +15,12 @@ interface IUser {
 	bio?: string | null
 }
 
-export default async ({ user, children }: { user: IUser; children: React.ReactNode }) => {
-	const authId = await getAuthId()
+export default ({ user, children }: { user: IUser; children: React.ReactNode }) => {
+	const [authId, setAuthId] = useState<string | null>()
+
+	useEffect(() => {
+		getAuthId().then((data) => setAuthId(data))
+	}, [])
 
 	return (
 		<HoverCard>

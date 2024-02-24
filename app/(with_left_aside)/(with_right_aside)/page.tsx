@@ -9,7 +9,7 @@ export default async () => {
 		<>
 			<p>Main page, recommended posts (or so) will be here.</p>
 			{mazhugasergei && (
-				<UserCardProvider user={mazhugasergei}>
+				<UserCardProvider user={JSON.parse(JSON.stringify(mazhugasergei))}>
 					<Link href="/mazhugasergei" className="text-sm hover:underline">
 						@mazhugasergei
 					</Link>

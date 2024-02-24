@@ -1,4 +1,4 @@
-import { Schema, model, models } from "mongoose"
+import { Schema, Types, model, models } from "mongoose"
 
 delete models["user"]
 
@@ -7,23 +7,24 @@ export default model(
 	new Schema({
 		_id: {
 			type: String,
-			required: true
+			required: true,
+			default: new Types.ObjectId().toString(),
 		},
 		username: {
 			type: String,
-			required: true
+			required: true,
 		},
 		email: {
 			type: String,
-			required: true
+			required: true,
 		},
 		fullname: {
 			type: String,
-			required: true
+			required: true,
 		},
 		password: {
 			type: String,
-			required: true
+			required: true,
 		},
 		bio: String,
 		pfp: String,
@@ -31,21 +32,21 @@ export default model(
 		verificationCode: String,
 		privateEmail: {
 			type: Boolean,
-			default: false
+			default: false,
 		},
 		lastUsernameUpdate: {
 			type: Date,
-			default: Date.now
+			default: Date.now,
 		},
 		friends: [String],
 		created: {
 			type: Date,
-			default: Date.now
+			default: Date.now,
 		},
 		expires: {
 			type: Date,
 			default: Date.now,
-			expires: 3600
-		}
+			expires: 3600,
+		},
 	})
 )

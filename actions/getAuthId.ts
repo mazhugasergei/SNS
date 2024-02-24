@@ -10,11 +10,16 @@ export const getAuthId = async () => {
 
 	// verify token
 	let _id: string | undefined, password: string | undefined
-	jwt.verify(token, process.env.JWT_SECRET || "", (err, decoded) => {
-		if (typeof decoded !== "object") return
-		_id = decoded._id
-		password = decoded.password
-	})
+	try {
+		jwt.verify(token, process.env.JWT_SECRET || "", (err, decoded) => {
+			if (typeof decoded !== "object") return
+			_id = decoded._id
+			password = decoded.password
+		})
+	} catch (err) {
+		console.error(err)
+		return null
+	}
 	if (!_id || !password) return null
 
 	// check if the user still exists
