@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import getPosts from "../[post]/actions/getPosts"
+import getPosts from "../actions/getPosts"
 import { useInView } from "react-intersection-observer"
 import UserCardProvider from "@/components/UserCardProvider"
 import Link from "next/link"
@@ -9,6 +9,8 @@ import { UserAvatar } from "@/app/(with_left_aside)/components/UserAvatar"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { LuHeart, LuMessageCircle } from "react-icons/lu"
 import { ReloadIcon } from "@radix-ui/react-icons"
+import { redirect } from "next/navigation"
+import updateLike from "../actions/updateLike"
 
 interface IUser {
 	_id: string
@@ -54,6 +56,30 @@ export default ({ user, authId }: { user: IUser; authId: string | null }) => {
 		}
 	}, [inView, loading, page])
 
+	const like = async (postId: string) => {
+		if (!authId) redirect("/log-in")
+
+		await updateLike(postId, authId)
+
+		const i = posts.findIndex((item) => item._id === postId)
+		if (i === -1) return
+
+		// remove like if set
+		if (posts[i].likes.includes(authId)) {
+			setPosts((prev) => {
+				prev[i].likes = prev[i].likes.filter((item) => item !== authId)
+				return [...prev]
+			})
+		}
+		// add like
+		else {
+			setPosts((prev) => {
+				const updatedPost = { ...prev[i], likes: [...prev[i].likes, authId] }
+				return [...prev.slice(0, i), updatedPost, ...prev.slice(i + 1)]
+			})
+		}
+	}
+
 	return (
 		<>
 			<div className="-mb-[.0625rem]">
@@ -79,16 +105,19 @@ export default ({ user, authId }: { user: IUser; authId: string | null }) => {
 									<span className="opacity-70"> @{user.username}</span>
 								</Link>
 							</UserCardProvider>
+
 							{/* date */}
 							<span className="opacity-70"> · </span>
 							<TooltipProvider>
 								<Tooltip>
-									<TooltipTrigger className="opacity-70 hover:underline">
-										{new Date(post.created).toLocaleDateString("en-US", {
-											year: "numeric",
-											month: "short",
-											day: "numeric",
-										})}
+									<TooltipTrigger className="hover:underline">
+										<span className="opacity-70">
+											{new Date(post.created).toLocaleDateString("en-US", {
+												year: "numeric",
+												month: "short",
+												day: "numeric",
+											})}
+										</span>
 									</TooltipTrigger>
 									<TooltipContent>
 										{new Date(post.created).toLocaleTimeString("en-US", {
@@ -105,13 +134,19 @@ export default ({ user, authId }: { user: IUser; authId: string | null }) => {
 									</TooltipContent>
 								</Tooltip>
 							</TooltipProvider>
+
 							{/* body */}
 							<br />
 							<p className="relative inline text-sm">{post.body}</p>
+
 							{/* post tools */}
 							<div className="flex gap-8 mt-2">
+								{/* like */}
 								<div className="relative group cursor-pointer flex items-center gap-2">
-									<div className="group-hover:bg-[#F918801A] rounded-full transition p-2 -m-2">
+									<button
+										onClick={() => like(post._id)}
+										className="group-hover:bg-[#F918801A] rounded-full transition p-2 -m-2"
+									>
 										<LuHeart
 											className="group-hover:stroke-[#F92083] transition"
 											style={{
@@ -119,7 +154,7 @@ export default ({ user, authId }: { user: IUser; authId: string | null }) => {
 												stroke: authId && post.likes.includes(authId) ? "#F92083" : "",
 											}}
 										/>
-									</div>
+									</button>
 									<span
 										className="text-xs group-hover:text-[#F92083] transition"
 										style={{ color: authId && post.likes.includes(authId) ? "#F92083" : "" }}
@@ -127,10 +162,11 @@ export default ({ user, authId }: { user: IUser; authId: string | null }) => {
 										{post.likes.length}
 									</span>
 								</div>
+								{/* comment */}
 								<div className="relative group cursor-pointer flex items-center gap-2">
-									<div className="group-hover:bg-[#1D9BF01A] rounded-full transition p-2 -m-2">
+									<button className="group-hover:bg-[#1D9BF01A] rounded-full transition p-2 -m-2">
 										<LuMessageCircle className="group-hover:stroke-[#1D9BF0] transition" />
-									</div>
+									</button>
 									<span className="text-xs group-hover:text-[#1D9BF0] transition">{post.comments}</span>
 								</div>
 							</div>
