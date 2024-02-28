@@ -2,7 +2,7 @@ import { UserAvatar } from "../../components/UserAvatar"
 import { LuCalendarDays, LuMail } from "react-icons/lu"
 import { Banner } from "../../components/Banner"
 import User from "@/models/User"
-import Posts from "./compoentns/Posts"
+import Posts from "./components/Posts"
 import { getAuthId } from "@/actions/getAuthId"
 
 export const generateMetadata = async ({ params }: { params: { username: string } }) => {

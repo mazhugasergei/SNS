@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import getPosts from "../actions/getPosts"
 import { useInView } from "react-intersection-observer"
 import UserCardProvider from "@/components/UserCardProvider"
@@ -9,7 +9,6 @@ import { UserAvatar } from "@/app/(with_left_aside)/components/UserAvatar"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { LuHeart, LuMessageCircle } from "react-icons/lu"
 import { ReloadIcon } from "@radix-ui/react-icons"
-import { redirect } from "next/navigation"
 import updateLike from "../actions/updateLike"
 
 interface IUser {
@@ -32,8 +31,10 @@ export default ({ user, authId }: { user: IUser; authId: string | null }) => {
 	const [page, setPage] = useState(0)
 	const [posts, setPosts] = useState<IPost[]>([])
 	const [loading, setLoading] = useState(false)
-	const { ref, inView, entry } = useInView({ rootMargin: "200px" })
+	const [observerVisible, setObserverVisible] = useState(true)
+	const { ref, inView } = useInView({ rootMargin: "200px" })
 
+	// on observer in view
 	useEffect(() => {
 		if (inView && !loading) {
 			setLoading(true)
@@ -41,7 +42,7 @@ export default ({ user, authId }: { user: IUser; authId: string | null }) => {
 				try {
 					const data = await getPosts({ authorId: user._id, limit: perPage, skip: perPage * page })
 					if (data.length === 0) {
-						entry?.target.remove()
+						setObserverVisible(false)
 					} else {
 						setPosts((prev) => [...prev, ...data])
 						setPage((prev) => prev + 1)
@@ -56,28 +57,28 @@ export default ({ user, authId }: { user: IUser; authId: string | null }) => {
 		}
 	}, [inView, loading, page])
 
-	const like = async (postId: string) => {
-		if (!authId) redirect("/log-in")
+	const like = (postId: string) => {
+		if (!authId) return
 
-		await updateLike(postId, authId)
+		let like = false
 
-		const i = posts.findIndex((item) => item._id === postId)
-		if (i === -1) return
-
-		// remove like if set
-		if (posts[i].likes.includes(authId)) {
-			setPosts((prev) => {
-				prev[i].likes = prev[i].likes.filter((item) => item !== authId)
-				return [...prev]
+		setPosts((prev) =>
+			prev.map((post) => {
+				if (post._id === postId) {
+					// remove like
+					if (post.likes.includes(authId)) {
+						return { ...post, likes: post.likes.filter((item) => item !== authId) }
+					}
+					// add like
+					else {
+						like = true
+						return { ...post, likes: [authId, ...post.likes] }
+					}
+				} else return post
 			})
-		}
-		// add like
-		else {
-			setPosts((prev) => {
-				const updatedPost = { ...prev[i], likes: [...prev[i].likes, authId] }
-				return [...prev.slice(0, i), updatedPost, ...prev.slice(i + 1)]
-			})
-		}
+		)
+
+		updateLike({ postId, authId, like })
 	}
 
 	return (
@@ -144,7 +145,7 @@ export default ({ user, authId }: { user: IUser; authId: string | null }) => {
 								{/* like */}
 								<div className="relative group cursor-pointer flex items-center gap-2">
 									<button
-										onClick={() => like(post._id)}
+										onClick={async () => await like(post._id)}
 										className="group-hover:bg-[#F918801A] rounded-full transition p-2 -m-2"
 									>
 										<LuHeart
@@ -175,9 +176,11 @@ export default ({ user, authId }: { user: IUser; authId: string | null }) => {
 				))}
 			</div>
 			{/* observer */}
-			<div ref={ref} className="min-h-[5rem] grid place-items-center">
-				<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-			</div>
+			{observerVisible && (
+				<div ref={ref} className="min-h-[5rem] grid place-items-center">
+					<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+				</div>
+			)}
 		</>
 	)
 }
