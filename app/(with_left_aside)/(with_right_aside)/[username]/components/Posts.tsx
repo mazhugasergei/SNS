@@ -60,25 +60,18 @@ export default ({ user, authId }: { user: IUser; authId: string | null }) => {
 	const like = (postId: string) => {
 		if (!authId) return
 
-		let like = false
-
 		setPosts((prev) =>
 			prev.map((post) => {
 				if (post._id === postId) {
-					// remove like
-					if (post.likes.includes(authId)) {
-						return { ...post, likes: post.likes.filter((item) => item !== authId) }
-					}
-					// add like
-					else {
-						like = true
-						return { ...post, likes: [authId, ...post.likes] }
+					return {
+						...post,
+						likes: post.likes.includes(authId) ? post.likes.filter((item) => item !== authId) : [authId, ...post.likes],
 					}
 				} else return post
 			})
 		)
 
-		updateLike({ postId, authId, like })
+		updateLike({ postId, authId, like: posts.find(({ _id }) => _id === postId)?.likes.includes(authId) ? false : true })
 	}
 
 	return (
@@ -145,7 +138,7 @@ export default ({ user, authId }: { user: IUser; authId: string | null }) => {
 								{/* like */}
 								<div className="relative group cursor-pointer flex items-center gap-2">
 									<button
-										onClick={async () => await like(post._id)}
+										onClick={() => like(post._id)}
 										className="group-hover:bg-[#F918801A] rounded-full transition p-2 -m-2"
 									>
 										<LuHeart
