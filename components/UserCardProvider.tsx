@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { UserAvatar } from "../app/(with_left_aside)/components/UserAvatar"
+import { UserAvatar } from "./UserAvatar"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { getAuthId } from "@/actions/getAuthId"

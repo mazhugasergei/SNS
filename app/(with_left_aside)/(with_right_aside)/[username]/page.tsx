@@ -1,9 +1,9 @@
-import { UserAvatar } from "../../components/UserAvatar"
+import { UserAvatar } from "../../../../components/UserAvatar"
 import { LuCalendarDays, LuMail } from "react-icons/lu"
-import { Banner } from "../../components/Banner"
+import { Banner } from "../../../../components/Banner"
 import User from "@/models/User"
-import Posts from "./components/Posts"
 import { getAuthId } from "@/actions/getAuthId"
+import Posts from "@/components/Posts"
 
 export const generateMetadata = async ({ params }: { params: { username: string } }) => {
 	const user = await User.findOne({ username: params.username })
@@ -55,7 +55,7 @@ export default async ({ params }: { params: { username: string } }) => {
 			</div>
 
 			{/* posts */}
-			<Posts user={JSON.parse(JSON.stringify(user))} {...{ authId }} />
+			<Posts users={[user._id]} {...{ authId }} />
 		</>
 	)
 }

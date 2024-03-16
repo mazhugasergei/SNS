@@ -3,7 +3,7 @@ import { searchUsers } from "./actions/searchUsers"
 import { CommandDialog, CommandInput } from "@/components/ui/command"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
-import { UserAvatar } from "../UserAvatar"
+import { UserAvatar } from "../../../../components/UserAvatar"
 
 type User = {
 	_id: string

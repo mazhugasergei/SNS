@@ -6,7 +6,7 @@ import User from "@/models/User"
 import { LuLogIn } from "react-icons/lu"
 import { LuSettings } from "react-icons/lu"
 import { SearchProvider } from "./SearchProvider/SearchProvider"
-import { UserAvatar } from "./UserAvatar"
+import { UserAvatar } from "../../../components/UserAvatar"
 
 export const Aside = async () => {
 	const authId = await getAuthId()
@@ -62,15 +62,16 @@ export const Aside = async () => {
 
 					{authId && (
 						<Link
-							href="/moment"
+							href="/post"
 							className="min-h-[2.25rem] flex justify-center items-center bg-primary hover:bg-primary/90 text-center text-sm text-primary-foreground font-medium rounded-md shadow transition p-2 md:px-4 mt-1"
 						>
 							<LuPen className="md:hidden" />
-							<span className="max-md:hidden">New Moment</span>
+							<span className="max-md:hidden">New Post</span>
 						</Link>
 					)}
 				</nav>
 			</div>
+
 			{/* Profile */}
 			<div className="mt-auto">
 				{authId ? (

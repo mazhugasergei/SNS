@@ -1,20 +1,9 @@
-import Link from "next/link"
-import UserCardProvider from "@/components/UserCardProvider"
-import User from "@/models/User"
+import Posts from "@/components/Posts"
 
 export default async () => {
-	const mazhugasergei = await User.findOne({ username: "mazhugasergei" })
-
 	return (
 		<>
-			<p>Main page, recommended posts (or so) will be here.</p>
-			{mazhugasergei && (
-				<UserCardProvider user={JSON.parse(JSON.stringify(mazhugasergei))}>
-					<Link href="/mazhugasergei" className="text-sm hover:underline">
-						@mazhugasergei
-					</Link>
-				</UserCardProvider>
-			)}
+			<Posts users={["65cc5cc62afc00b73f8d8811", "65f3d3b0a1696aca4164d2ac"]} />
 		</>
 	)
 }

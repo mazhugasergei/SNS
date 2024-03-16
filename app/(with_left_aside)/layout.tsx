@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
 import { ReactNode } from "react"
-import Footer from "./components/Footer"
+import Footer from "../../components/Footer"
 import { Aside } from "./components/Aside"
 
 export const metadata: Metadata = {
-	title: "Home - Wave"
+	title: "Home - Wave",
 }
 
 export default ({ children }: { children: ReactNode }) => {

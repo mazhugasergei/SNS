@@ -38,7 +38,7 @@ const formSchema = zod.object({
 	fullname: zod
 		.string()
 		.min(2, { message: "Fullname must be at least 2 characters" })
-		.max(50, { message: "Fullname must contain at most 50 characters" })
+		.max(50, { message: "Fullname must contain at most 50 characters" }),
 })
 
 export const FormClientComponent = () => {
@@ -48,8 +48,8 @@ export const FormClientComponent = () => {
 			email: "ghbdtnghbdtn8@gmail.com",
 			username: "mazhugasergei",
 			password: "12345678",
-			fullname: "Mazhuga Sergei"
-		}
+			fullname: "Mazhuga Sergei",
+		},
 	})
 
 	const onSubmit = async (data: zod.infer<typeof formSchema>) => {
@@ -62,7 +62,7 @@ export const FormClientComponent = () => {
 						title: "Welcome aboard! ⛴️",
 						description:
 							"Don't forget to verify your email, it helps to ensure that your account is secure. Please note that if you do not verify the email during 1 hour, your account will be deleted permanently.",
-						duration: 20000
+						duration: 20000,
 					})
 				}
 			})

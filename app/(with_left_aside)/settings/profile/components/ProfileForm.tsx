@@ -9,13 +9,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { ReloadIcon } from "@radix-ui/react-icons"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { UserAvatar } from "@/app/(with_left_aside)/components/UserAvatar"
+import { UserAvatar } from "@/components/UserAvatar"
 import { updateProfile } from "../actions/updateProfile"
 import { LuCalendarDays, LuMail } from "react-icons/lu"
 import { useFormError } from "@/hooks/useFormError"
 import { useState } from "react"
 import { useChangesSuccess } from "../../hooks/useChangesSuccess"
-import { Banner } from "@/app/(with_left_aside)/components/Banner"
+import { Banner } from "@/components/Banner"
 
 interface IUser {
 	_id: string
