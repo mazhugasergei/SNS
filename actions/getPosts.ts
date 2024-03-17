@@ -3,9 +3,25 @@
 import Post from "@/models/Post"
 import User from "@/models/User"
 
-export default async ({ users, limit, skip }: { users: string[]; limit: number; skip: number }) => {
-	const posts = await Post.find({ authorId: users }).sort({ created: -1 }).skip(skip).limit(limit)
-	const profiles = await User.find({ _id: users })
+interface ISearchQuery {
+	authorId?: string[]
+	parentId?: string
+}
+
+interface IGetPosts extends ISearchQuery {
+	limit: number
+	skip: number
+}
+
+export default async ({ authorId, parentId, limit, skip }: IGetPosts) => {
+	const query: ISearchQuery = {}
+	if (authorId) query.authorId = authorId
+	if (parentId) query.parentId = parentId
+
+	const posts = await Post.find(query).sort({ created: -1 }).skip(skip).limit(limit)
+
+	const profiles = await User.find({ _id: posts.map(({ authorId }) => authorId) })
+
 	const res = []
 	for (const post of posts) {
 		const user = profiles.find(({ _id }) => _id === post.authorId) || null
@@ -19,5 +35,6 @@ export default async ({ users, limit, skip }: { users: string[]; limit: number; 
 			parentPostUser: JSON.parse(JSON.stringify(parentPostUser)),
 		})
 	}
+
 	return res
 }

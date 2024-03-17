@@ -10,7 +10,7 @@ import { UserAvatar } from "@/components/UserAvatar"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
 import { LuHeart, LuMessageCircle } from "react-icons/lu"
 import { getAuthId } from "@/actions/getAuthId"
-import updateLike from "@/actions/updateLike"
+import updateLike from "@/actions/likePost"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -20,6 +20,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { RxDotsHorizontal } from "react-icons/rx"
+import deletePost from "@/actions/deletePost"
 
 interface IPost {
 	_id: string
@@ -48,18 +49,16 @@ export const Post = ({
 	post,
 	user,
 	authId,
-	parent,
-	posts,
+	hideParent,
 	setPosts,
 }: {
 	post: IPost
 	user: IUser
 	authId: string | null
-	parent?: boolean
-	posts: IExtendedPost[]
+	hideParent?: boolean
 	setPosts: Dispatch<SetStateAction<IExtendedPost[]>>
 }) => {
-	const like = (postId: string) => {
+	const likePost = (postId: string) => {
 		if (!authId) return
 
 		let like = true
@@ -94,6 +93,12 @@ export const Post = ({
 		})
 	}
 
+	const delPost = (postId: string) => {
+		setPosts((prev) => prev.filter(({ post, parentPost }) => post._id !== postId && parentPost?._id !== postId))
+
+		deletePost(postId)
+	}
+
 	return (
 		<>
 			{/* post */}
@@ -104,6 +109,7 @@ export const Post = ({
 			>
 				{/* post link */}
 				<Link href={`${user.username}/${post._id}`} className="cursor-pointer absolute inset-0" />
+
 				{/* left */}
 				<div>
 					{/* pfp */}
@@ -113,8 +119,9 @@ export const Post = ({
 						</Link>
 					</UserCardProvider>
 					{/* post chain */}
-					{post.parentId && <div className="w-[50%] h-full border-r border-dashed mt-1" />}
+					{!hideParent && post.parentId && <div className="w-[50%] h-full border-r border-dashed mt-1" />}
 				</div>
+
 				{/* right */}
 				<div>
 					<div className="flex">
@@ -159,11 +166,13 @@ export const Post = ({
 						<div className="ml-auto">
 							{authId === user._id && (
 								<DropdownMenu>
-									<DropdownMenuTrigger className="relative block md:hidden group-hover/post:block p-2 -m-2">
+									<DropdownMenuTrigger className="relative md:opacity-0 group-hover/post:opacity-100 transition p-2 -m-2">
 										<RxDotsHorizontal />
 									</DropdownMenuTrigger>
 									<DropdownMenuContent>
-										<DropdownMenuItem>Delete</DropdownMenuItem>
+										<DropdownMenuItem className="cursor-pointer" onClick={() => delPost(post._id)}>
+											Delete
+										</DropdownMenuItem>
 									</DropdownMenuContent>
 								</DropdownMenu>
 							)}
@@ -178,7 +187,7 @@ export const Post = ({
 						{/* like */}
 						<div className="relative group/like cursor-pointer flex items-center gap-2">
 							<button
-								onClick={() => like(post._id)}
+								onClick={() => likePost(post._id)}
 								className="group-hover/like:bg-[#F918801A] rounded-full transition p-2 -m-2"
 							>
 								<LuHeart
@@ -210,9 +219,10 @@ export const Post = ({
 	)
 }
 
-export default ({ users }: { users: string[] }) => {
+export default ({ authorId, parentId }: { authorId?: string[]; parentId?: string }) => {
+	const hideParent = parentId ? true : false
 	const [authId, setAuthId] = useState<string | null>(null)
-	const perPage = 1
+	const perPage = 3
 	const [page, setPage] = useState(0)
 	const [posts, setPosts] = useState<IExtendedPost[]>([])
 	const [loading, setLoading] = useState(false)
@@ -229,7 +239,7 @@ export default ({ users }: { users: string[] }) => {
 			setLoading(true)
 			const addPosts = async () => {
 				try {
-					const data = await getPosts({ users, limit: perPage, skip: perPage * page })
+					const data = await getPosts({ authorId, parentId, limit: perPage, skip: perPage * page })
 					if (data.length === 0) setObserverVisible(false)
 					else {
 						setPosts((prev) => [...prev, ...data])
@@ -252,9 +262,9 @@ export default ({ users }: { users: string[] }) => {
 				({ post, user, parentPost, parentPostUser }) =>
 					user && (
 						<div key={post._id}>
-							<Post {...{ user, post, authId, posts, setPosts }} />
-							{parentPost && parentPostUser && (
-								<Post {...{ authId, posts, setPosts }} user={parentPostUser} post={parentPost} />
+							<Post {...{ user, post, authId, hideParent, setPosts }} />
+							{!hideParent && parentPost && parentPostUser && (
+								<Post {...{ authId, setPosts }} user={parentPostUser} post={parentPost} />
 							)}
 						</div>
 					)
