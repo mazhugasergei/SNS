@@ -1,6 +1,6 @@
-import { UserAvatar } from "../../../../components/UserAvatar"
+import { UserAvatar } from "@/components/UserAvatar"
 import { LuCalendarDays, LuMail } from "react-icons/lu"
-import { Banner } from "../../../../components/Banner"
+import { Banner } from "@/components/Banner"
 import User from "@/models/User"
 import { getAuthId } from "@/actions/getAuthId"
 import Posts from "@/components/Posts"
@@ -28,7 +28,7 @@ export default async ({ params }: { params: { username: string } }) => {
 			{/* profile details */}
 			<div className="contianer border-b">
 				<Banner src={user.banner} />
-				<div className="px-4 pb-3 sm:px-8 sm:pb-6">
+				<div className="px-4 pb-3 sm:px-5 sm:pb-6">
 					<UserAvatar
 						src={user.pfp}
 						className="w-[20vw] h-[20vw] sm:w-[8.40625rem] sm:h-[8.40625rem] border-4 border-background mb-3 -mt-[calc(20vw/2)] md:-mt-[4.203125rem]"
@@ -55,7 +55,7 @@ export default async ({ params }: { params: { username: string } }) => {
 			</div>
 
 			{/* posts */}
-			<Posts users={[user._id]} {...{ authId }} />
+			<Posts authorId={[user._id]} {...{ authId }} />
 		</>
 	)
 }

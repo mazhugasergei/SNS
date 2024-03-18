@@ -3,7 +3,7 @@
 import getPosts from "@/actions/getPosts"
 import { ReloadIcon } from "@radix-ui/react-icons"
 import Link from "next/link"
-import { Dispatch, ReactNode, SetStateAction, useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
 import UserCardProvider from "./UserCardProvider"
 import { UserAvatar } from "@/components/UserAvatar"
@@ -103,12 +103,12 @@ export const Post = ({
 		<>
 			{/* post */}
 			<div
-				className={`group/post relative grid grid-cols-[auto_1fr] items-stretch gap-[.6875rem] items-start hover:bg-[#00000006] text-sm px-8 py-5 -mb-[.0625rem] transition ${
+				className={`group/post relative grid grid-cols-[auto_1fr] items-stretch gap-[.6875rem] items-start hover:bg-[#00000006] text-sm px-5 py-4 -mb-[.0625rem] transition ${
 					!post.parentId && "border-b"
 				}`}
 			>
 				{/* post link */}
-				<Link href={`${user.username}/${post._id}`} className="cursor-pointer absolute inset-0" />
+				<Link href={`/${user.username}/${post._id}`} className="cursor-pointer absolute inset-0" />
 
 				{/* left */}
 				<div>
@@ -119,7 +119,9 @@ export const Post = ({
 						</Link>
 					</UserCardProvider>
 					{/* post chain */}
-					{!hideParent && post.parentId && <div className="w-[50%] h-full border-r border-dashed mt-1" />}
+					{!hideParent && post.parentId && (
+						<div className="w-[50%] h-[calc(100%-0.5rem)] border-r-2 border-dashed mt-1" />
+					)}
 				</div>
 
 				{/* right */}
@@ -162,14 +164,14 @@ export const Post = ({
 							</Tooltip>
 						</TooltipProvider>
 
-						{/* actions */}
+						{/* context menu */}
 						<div className="ml-auto">
 							{authId === user._id && (
 								<DropdownMenu>
-									<DropdownMenuTrigger className="relative md:opacity-0 group-hover/post:opacity-100 transition p-2 -m-2">
+									<DropdownMenuTrigger className="relative md:opacity-0 group-hover/post:opacity-100 focus:opacity-100 transition p-2 -m-2">
 										<RxDotsHorizontal />
 									</DropdownMenuTrigger>
-									<DropdownMenuContent>
+									<DropdownMenuContent className="m-2">
 										<DropdownMenuItem className="cursor-pointer" onClick={() => delPost(post._id)}>
 											Delete
 										</DropdownMenuItem>
@@ -182,7 +184,7 @@ export const Post = ({
 					{/* body */}
 					<p className="relative inline text-sm">{post.body}</p>
 
-					{/* post tools */}
+					{/* actions */}
 					<div className="flex gap-8 mt-2">
 						{/* like */}
 						<div className="relative group/like cursor-pointer flex items-center gap-2">
