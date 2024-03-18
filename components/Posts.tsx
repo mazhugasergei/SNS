@@ -10,15 +10,8 @@ import { UserAvatar } from "@/components/UserAvatar"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
 import { LuHeart, LuMessageCircle } from "react-icons/lu"
 import { getAuthId } from "@/actions/getAuthId"
-import updateLike from "@/actions/likePost"
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import updatePostLike from "@/actions/updatePostLike"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { RxDotsHorizontal } from "react-icons/rx"
 import deletePost from "@/actions/deletePost"
 
@@ -86,7 +79,7 @@ export const Post = ({
 			})
 		)
 
-		updateLike({
+		updatePostLike({
 			postId,
 			authId,
 			like,
@@ -120,7 +113,7 @@ export const Post = ({
 					</UserCardProvider>
 					{/* post chain */}
 					{!hideParent && post.parentId && (
-						<div className="w-[50%] h-[calc(100%-0.5rem)] border-r-2 border-dashed mt-1" />
+						<div className="pointer-events-none relative l-[50%] -translate-x-[50%] h-[calc(100%-0.5rem)] border-r-2 border-dashed mt-1" />
 					)}
 				</div>
 
@@ -171,7 +164,7 @@ export const Post = ({
 									<DropdownMenuTrigger className="relative md:opacity-0 group-hover/post:opacity-100 focus:opacity-100 transition p-2 -m-2">
 										<RxDotsHorizontal />
 									</DropdownMenuTrigger>
-									<DropdownMenuContent className="m-2">
+									<DropdownMenuContent className="mr-2">
 										<DropdownMenuItem className="cursor-pointer" onClick={() => delPost(post._id)}>
 											Delete
 										</DropdownMenuItem>

@@ -9,15 +9,9 @@ import getPost from "@/actions/getPost"
 import UserCardProvider from "./UserCardProvider"
 import Link from "next/link"
 import { UserAvatar } from "./UserAvatar"
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { RxDotsHorizontal } from "react-icons/rx"
+import updatePostLike from "@/actions/updatePostLike"
 
 interface IUser {
 	_id: string
@@ -26,6 +20,7 @@ interface IUser {
 	pfp?: string | null
 	bio?: string | null
 }
+
 interface IPost {
 	_id: string
 	body: string
@@ -46,7 +41,20 @@ export default ({ username, postId }: { username: string; postId: string }) => {
 		getPost({ _id: postId }).then((data) => setPost(data))
 	}, [])
 
-	const likePost = (postId: string) => {}
+	const likePost = (postId: string) => {
+		if (!authId) return
+
+		setPost((prev) => {
+			if (!prev) return null
+			const { likes } = prev
+			return {
+				...prev,
+				likes: likes.includes(authId) ? likes.filter((item) => item !== authId) : [authId, ...likes],
+			}
+		})
+
+		updatePostLike({ postId, authId, like: post?.likes.includes(authId) ? false : true })
+	}
 
 	const delPost = (postId: string) => {}
 
@@ -55,9 +63,11 @@ export default ({ username, postId }: { username: string; postId: string }) => {
 			<div className="px-5">
 				{/* user */}
 				{user && (
-					<div className="relative grid grid-cols-[auto_1fr] gap-[.6875rem] items-center">
+					<div className="relative grid grid-cols-[auto_1fr] grid-rows-[auto_auto] gap-x-[.6875rem] items-center">
 						{/* post chain */}
-						{post?.parentId && <div className="w-4 h-3 absolute -top-4 border-r-2 border-dashed" />}
+						{post?.parentId ? <div className="w-0 h-3 place-self-center border-r-2 border-dashed" /> : <div />}
+
+						<div />
 
 						{/* pfp */}
 						<UserCardProvider {...{ user }}>
@@ -82,7 +92,7 @@ export default ({ username, postId }: { username: string; postId: string }) => {
 										<DropdownMenuTrigger className="p-2 -m-2">
 											<RxDotsHorizontal />
 										</DropdownMenuTrigger>
-										<DropdownMenuContent className="m-2">
+										<DropdownMenuContent className="mr-2">
 											<DropdownMenuItem className="cursor-pointer" onClick={() => delPost(postId)}>
 												Delete
 											</DropdownMenuItem>
