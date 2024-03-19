@@ -45,12 +45,14 @@ export const Post = ({
 	authId,
 	hideParent,
 	setPosts,
+	className,
 }: {
 	post: IPost
 	user: IUser
 	authId: string | null
 	hideParent?: boolean
 	setPosts: Dispatch<SetStateAction<IExtendedPost[]>>
+	className?: string
 }) => {
 	const likePost = (postId: string) => {
 		if (!authId) return
@@ -97,9 +99,7 @@ export const Post = ({
 		<>
 			{/* post */}
 			<div
-				className={`group/post relative grid grid-cols-[auto_1fr] items-stretch gap-[.6875rem] items-start hover:bg-[#00000006] text-sm px-5 py-4 -mb-[.0625rem] transition ${
-					!post.parentId && "border-b"
-				}`}
+				className={`group/post relative grid grid-cols-[auto_1fr] items-stretch gap-[.6875rem] items-start hover:bg-[#00000006] text-sm px-5 py-4 transition ${className}`}
 			>
 				{/* post link */}
 				<Link href={`/${user.username}/${post._id}`} className="cursor-pointer absolute inset-0" />
@@ -264,9 +264,9 @@ export default ({ authorId, parentId }: { authorId?: string[]; parentId?: string
 			{posts.map(
 				({ post, user, parentPost, parentPostUser }) =>
 					user && (
-						<div key={post._id}>
+						<div className="border-b -my-[.0625rem]" key={post._id}>
 							{/* post */}
-							<Post {...{ user, post, authId, hideParent, setPosts }} />
+							<Post {...{ user, post, authId, hideParent, setPosts }} className="border-t" />
 							{/* parent post */}
 							{!hideParent && parentPost && parentPostUser && (
 								<Post user={parentPostUser} post={parentPost} {...{ authId, setPosts }} />
