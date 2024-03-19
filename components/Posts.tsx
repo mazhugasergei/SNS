@@ -14,7 +14,7 @@ import updatePostLike from "@/actions/updatePostLike"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { RxDotsHorizontal } from "react-icons/rx"
 import deletePost from "@/actions/deletePost"
-import Form from "@/app/(with_left_aside)/(with_right_aside)/post/components/Form"
+import Form from "@/components/Form"
 
 interface IPost {
 	_id: string
@@ -203,9 +203,12 @@ export const Post = ({
 						</div>
 						{/* comment */}
 						<div className="relative group/comment cursor-pointer flex items-center gap-2">
-							<button className="group-hover/comment:bg-[#1D9BF01A] rounded-full transition p-2 -m-2">
+							<Link
+								href={`/${user.username}/${post._id}#comments`}
+								className="group-hover/comment:bg-[#1D9BF01A] rounded-full transition p-2 -m-2"
+							>
 								<LuMessageCircle className="group-hover/comment:stroke-[#1D9BF0] transition" />
-							</button>
+							</Link>
 							<span className="text-xs group-hover/comment:text-[#1D9BF0] transition">{post.replies}</span>
 						</div>
 					</div>
@@ -252,7 +255,7 @@ export default ({ authorId, parentId }: { authorId?: string[]; parentId?: string
 	}, [inView, loading, page])
 
 	return (
-		<>
+		<div id="comments">
 			{/* new post / post reply */}
 			{/* display only if users ids array length is more than 1 (e.g. in feed) OR parent post id is provided (e.g. in replies) */}
 			{((authorId && authorId.length > 1) || parentId) && <Form {...{ parentId }} />}
@@ -266,7 +269,7 @@ export default ({ authorId, parentId }: { authorId?: string[]; parentId?: string
 							<Post {...{ user, post, authId, hideParent, setPosts }} />
 							{/* parent post */}
 							{!hideParent && parentPost && parentPostUser && (
-								<Post {...{ authId, setPosts }} user={parentPostUser} post={parentPost} />
+								<Post user={parentPostUser} post={parentPost} {...{ authId, setPosts }} />
 							)}
 							{/* if parent post not found */}
 							{post.parentId && !parentPost && (
@@ -282,6 +285,6 @@ export default ({ authorId, parentId }: { authorId?: string[]; parentId?: string
 					<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
 				</div>
 			)}
-		</>
+		</div>
 	)
 }

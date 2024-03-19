@@ -144,9 +144,9 @@ export default ({ username, postId }: { username: string; postId: string }) => {
 				</div>
 				{/* comment */}
 				<div className="group/comment cursor-pointer flex items-center gap-2">
-					<button className="group-hover/comment:bg-[#1D9BF01A] rounded-full transition p-2 -m-2">
+					<Link href="#comments" className="group-hover/comment:bg-[#1D9BF01A] rounded-full transition p-2 -m-2">
 						<LuMessageCircle className="w-4 h-4 group-hover/comment:stroke-[#1D9BF0] transition" />
-					</button>
+					</Link>
 					<span className="text-xs group-hover/comment:text-[#1D9BF0] transition">{post?.replies}</span>
 				</div>
 			</div>

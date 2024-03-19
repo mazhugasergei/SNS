@@ -45,7 +45,10 @@ export default ({ parentId }: { parentId?: string }) => {
 		if (!authUser) return
 		const { body } = values
 		await newPost({ body })
-			.then((postId) => (window.location.href = `/${authUser.username}/${postId}`))
+			.then((postId) => {
+				if (parentId) {
+				} else window.location.href = `/${authUser.username}/${postId}`
+			})
 			.catch((err) => useFormError(form, err, onSubmit))
 	}
 

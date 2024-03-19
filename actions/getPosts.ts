@@ -25,13 +25,14 @@ export default async ({ authorId, parentId, limit, skip }: IGetPosts) => {
 	const res = []
 	for (const post of posts) {
 		const user = profiles.find(({ _id }) => _id === post.authorId) || null
-		const replies = (await Post.find({ parentId: post._id })).length
+		const postReplies = (await Post.find({ parentId: post._id })).length
 		const parentPost = post.parentId ? await Post.findById(post.parentId) : null
+		const parentPostReplies = parentPost ? (await Post.find({ parentId: parentPost._id })).length : null
 		const parentPostUser = post.parentId ? await User.findById(parentPost?.authorId) : null
 		res.push({
-			post: { ...JSON.parse(JSON.stringify(post)), replies },
+			post: { ...JSON.parse(JSON.stringify(post)), replies: postReplies },
 			user: JSON.parse(JSON.stringify(user)),
-			parentPost: JSON.parse(JSON.stringify(parentPost)),
+			parentPost: { ...JSON.parse(JSON.stringify(parentPost)), replies: parentPostReplies },
 			parentPostUser: JSON.parse(JSON.stringify(parentPostUser)),
 		})
 	}
