@@ -257,9 +257,15 @@ export default ({ authorId, parentId }: { authorId?: string[]; parentId?: string
 				({ post, user, parentPost, parentPostUser }) =>
 					user && (
 						<div key={post._id}>
+							{/* post */}
 							<Post {...{ user, post, authId, hideParent, setPosts }} />
+							{/* parent post */}
 							{!hideParent && parentPost && parentPostUser && (
 								<Post {...{ authId, setPosts }} user={parentPostUser} post={parentPost} />
+							)}
+							{/* if parent post not found */}
+							{post.parentId && !parentPost && (
+								<div className="text-sm border-b px-5 py-4 -mb-[.0625rem]">Post not found</div>
 							)}
 						</div>
 					)

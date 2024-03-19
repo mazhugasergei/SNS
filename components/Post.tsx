@@ -12,6 +12,7 @@ import { UserAvatar } from "./UserAvatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { RxDotsHorizontal } from "react-icons/rx"
 import updatePostLike from "@/actions/updatePostLike"
+import deletePost from "@/actions/deletePost"
 
 interface IUser {
 	_id: string
@@ -56,7 +57,9 @@ export default ({ username, postId }: { username: string; postId: string }) => {
 		updatePostLike({ postId, authId, like: post?.likes.includes(authId) ? false : true })
 	}
 
-	const delPost = (postId: string) => {}
+	const delPost = (postId: string) => {
+		deletePost(postId).then(() => (window.location.href = "/"))
+	}
 
 	return (
 		<div className="text-sm border-b">
