@@ -14,6 +14,7 @@ import updatePostLike from "@/actions/updatePostLike"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { RxDotsHorizontal } from "react-icons/rx"
 import deletePost from "@/actions/deletePost"
+import Form from "@/app/(with_left_aside)/(with_right_aside)/post/components/Form"
 
 interface IPost {
 	_id: string
@@ -228,7 +229,7 @@ export default ({ authorId, parentId }: { authorId?: string[]; parentId?: string
 		getAuthId().then((data) => setAuthId(data))
 	}, [])
 
-	// on observer in view
+	// load posts on observer in view
 	useEffect(() => {
 		if (inView && !loading) {
 			setLoading(true)
@@ -252,6 +253,10 @@ export default ({ authorId, parentId }: { authorId?: string[]; parentId?: string
 
 	return (
 		<>
+			{/* new post / post reply */}
+			{/* display only if users ids array length is more than 1 (e.g. in feed) OR parent post id is provided (e.g. in replies) */}
+			{((authorId && authorId.length > 1) || parentId) && <Form {...{ parentId }} />}
+
 			{/* posts */}
 			{posts.map(
 				({ post, user, parentPost, parentPostUser }) =>
