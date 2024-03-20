@@ -238,7 +238,11 @@ export default ({ authorId, parentId }: { authorId?: string[]; parentId?: string
 		<div id="comments">
 			{/* new post / post reply */}
 			{/* display only if users ids array length is more than 1 (e.g. in feed) OR parent post id is provided (e.g. in replies) */}
-			{((authorId && authorId.length > 1) || parentId) && <PostForm {...{ parentId, setPosts }} />}
+			{((authorId && authorId.length > 1) || parentId) && (
+				<div className="border-b">
+					<PostForm {...{ parentId, setPosts }} />
+				</div>
+			)}
 
 			{/* posts */}
 			{posts.map(

@@ -18,7 +18,7 @@ const formSchema = z.object({
 	body: z.string().min(1).max(300),
 })
 
-export default ({ parentId, setPosts }: { parentId?: string; setPosts: Dispatch<SetStateAction<ExtendedPost[]>> }) => {
+export default ({ parentId, setPosts }: { parentId?: string; setPosts?: Dispatch<SetStateAction<ExtendedPost[]>> }) => {
 	const [authId, setAuthId] = useState<string | null>()
 	const [user, setUser] = useState<User | null>()
 
@@ -42,7 +42,7 @@ export default ({ parentId, setPosts }: { parentId?: string; setPosts: Dispatch<
 		const { body } = values
 		await newPost({ parentId, body })
 			.then((postId) => {
-				if (parentId) {
+				if (parentId && setPosts) {
 					getPosts({ _id: postId }).then((data) => {
 						form.reset()
 						setPosts((prev) => [...data, ...prev])
