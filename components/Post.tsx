@@ -5,7 +5,6 @@ import { useEffect, useState } from "react"
 import { LuChevronLeft, LuHeart, LuMessageCircle } from "react-icons/lu"
 import { Button } from "./ui/button"
 import getUser from "@/actions/getUser"
-import getPost from "@/actions/getPost"
 import UserCardProvider from "./UserCardProvider"
 import Link from "next/link"
 import { UserAvatar } from "./UserAvatar"
@@ -13,28 +12,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { RxDotsHorizontal } from "react-icons/rx"
 import updatePostLike from "@/actions/updatePostLike"
 import deletePost from "@/actions/deletePost"
-
-interface IUser {
-	_id: string
-	username: string
-	fullname: string
-	pfp?: string | null
-	bio?: string | null
-}
-
-interface IPost {
-	_id: string
-	body: string
-	likes: string[]
-	replies: number
-	parentId?: string | null
-	created: string
-}
+import getPost from "@/actions/getPost"
 
 export default ({ username, postId }: { username: string; postId: string }) => {
 	const [authId, setAuthId] = useState<string | null>(null)
-	const [user, setUser] = useState<IUser | null>(null)
-	const [post, setPost] = useState<IPost | null>(null)
+	const [user, setUser] = useState<User | null>(null)
+	const [post, setPost] = useState<Post | null>(null)
 
 	useEffect(() => {
 		getAuthId().then((data) => setAuthId(data))
@@ -107,7 +90,7 @@ export default ({ username, postId }: { username: string; postId: string }) => {
 					</div>
 				)}
 
-				<p className="pt-2">{post?.body}</p>
+				<p className="overflow-wrap-break-word break-word break-all pt-2">{post?.body}</p>
 
 				{/* date */}
 				{post && (

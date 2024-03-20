@@ -14,30 +14,7 @@ import updatePostLike from "@/actions/updatePostLike"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { RxDotsHorizontal } from "react-icons/rx"
 import deletePost from "@/actions/deletePost"
-import Form from "@/components/Form"
-
-interface IPost {
-	_id: string
-	body: string
-	likes: string[]
-	replies?: number
-	parentId?: string
-	created: Date
-}
-
-interface IUser {
-	_id: string
-	username: string
-	fullname: string
-	pfp?: string | null
-}
-
-interface IExtendedPost {
-	post: IPost
-	user: IUser | null
-	parentPost: IPost | null
-	parentPostUser: IUser | null
-}
+import PostForm from "@/components/PostForm"
 
 export const Post = ({
 	post,
@@ -47,11 +24,11 @@ export const Post = ({
 	setPosts,
 	className,
 }: {
-	post: IPost
-	user: IUser
+	post: Post
+	user: User
 	authId: string | null
 	hideParent?: boolean
-	setPosts: Dispatch<SetStateAction<IExtendedPost[]>>
+	setPosts: Dispatch<SetStateAction<ExtendedPost[]>>
 	className?: string
 }) => {
 	const likePost = (postId: string) => {
@@ -176,7 +153,7 @@ export const Post = ({
 					</div>
 
 					{/* body */}
-					<p className="relative inline text-sm">{post.body}</p>
+					<p className="relative inline overflow-wrap-break-word break-word break-all  text-sm">{post.body}</p>
 
 					{/* actions */}
 					<div className="flex gap-8 mt-2">
@@ -221,12 +198,13 @@ export const Post = ({
 export default ({ authorId, parentId }: { authorId?: string[]; parentId?: string }) => {
 	const hideParent = parentId ? true : false
 	const [authId, setAuthId] = useState<string | null>(null)
-	const perPage = 3
-	const [page, setPage] = useState(0)
-	const [posts, setPosts] = useState<IExtendedPost[]>([])
+	const perPage = 1
+	const [posts, setPosts] = useState<ExtendedPost[]>([])
 	const [loading, setLoading] = useState(false)
 	const [observerVisible, setObserverVisible] = useState(true)
-	const { ref, inView } = useInView({ rootMargin: "200px" })
+	const { ref, inView } = useInView({
+		// rootMargin: "200px",
+	})
 
 	useEffect(() => {
 		getAuthId().then((data) => setAuthId(data))
@@ -238,11 +216,13 @@ export default ({ authorId, parentId }: { authorId?: string[]; parentId?: string
 			setLoading(true)
 			const addPosts = async () => {
 				try {
-					const data = await getPosts({ authorId, parentId, limit: perPage, skip: perPage * page })
+					const data = await getPosts({ authorId, parentId, limit: perPage, skip: posts.length })
 					if (data.length === 0) setObserverVisible(false)
 					else {
-						setPosts((prev) => [...prev, ...data])
-						setPage((prev) => prev + 1)
+						setPosts((prev) => {
+							const ids = prev.map(({ post }) => post._id)
+							return [...prev, ...data.filter((item) => !ids.includes(item.post._id))]
+						})
 					}
 				} catch (error) {
 					console.error("Error fetching posts:", error)
@@ -252,13 +232,13 @@ export default ({ authorId, parentId }: { authorId?: string[]; parentId?: string
 			}
 			addPosts()
 		}
-	}, [inView, loading, page])
+	}, [inView, loading])
 
 	return (
 		<div id="comments">
 			{/* new post / post reply */}
 			{/* display only if users ids array length is more than 1 (e.g. in feed) OR parent post id is provided (e.g. in replies) */}
-			{((authorId && authorId.length > 1) || parentId) && <Form {...{ parentId }} />}
+			{((authorId && authorId.length > 1) || parentId) && <PostForm {...{ parentId, setPosts }} />}
 
 			{/* posts */}
 			{posts.map(

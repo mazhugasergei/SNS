@@ -8,29 +8,25 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import newPost from "../actions/newPost"
 import { useFormError } from "@/hooks/useFormError"
 import { UserAvatar } from "@/components/UserAvatar"
-import { useEffect, useRef, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
 import { getAuthId } from "@/actions/getAuthId"
 import getUser from "@/actions/getUser"
 import Link from "next/link"
-
-interface IUser {
-	username: string
-	pfp?: string | null
-}
+import getPosts from "@/actions/getPosts"
 
 const formSchema = z.object({
 	body: z.string().min(1).max(300),
 })
 
-export default ({ parentId }: { parentId?: string }) => {
+export default ({ parentId, setPosts }: { parentId?: string; setPosts: Dispatch<SetStateAction<ExtendedPost[]>> }) => {
 	const [authId, setAuthId] = useState<string | null>()
-	const [authUser, setAuthUser] = useState<IUser | null>()
+	const [user, setUser] = useState<User | null>()
 
 	useEffect(() => {
 		getAuthId().then((_id) => {
 			setAuthId(_id)
 			if (!_id) return
-			getUser({ _id }).then((data) => setAuthUser(data))
+			getUser({ _id }).then((data) => setUser(data))
 		})
 	}, [])
 
@@ -42,19 +38,23 @@ export default ({ parentId }: { parentId?: string }) => {
 	})
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
-		if (!authUser) return
+		if (!user) return
 		const { body } = values
-		await newPost({ body })
+		await newPost({ parentId, body })
 			.then((postId) => {
 				if (parentId) {
-				} else window.location.href = `/${authUser.username}/${postId}`
+					getPosts({ _id: postId }).then((data) => {
+						form.reset()
+						setPosts((prev) => [...data, ...prev])
+					})
+				} else window.location.href = `/${user.username}/${postId}`
 			})
 			.catch((err) => useFormError(form, err, onSubmit))
 	}
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col border-b px-5 py-2">
+			<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col px-5 py-4">
 				<FormField
 					control={form.control}
 					name="body"
@@ -70,10 +70,10 @@ export default ({ parentId }: { parentId?: string }) => {
 							<FormControl>
 								<div className="grid grid-cols-[auto_1fr] items-start gap-2">
 									<Link
-										href={authUser ? `/${authUser?.username}` : typeof authUser === null ? "/log-in" : ""}
+										href={user ? `/${user?.username}` : typeof user === null ? "/log-in" : ""}
 										className="rounded-full"
 									>
-										<UserAvatar src={authUser?.pfp} className="w-8 h-8 hover:brightness-[.92] transition" />
+										<UserAvatar src={user?.pfp} className="w-8 h-8 hover:brightness-[.92] transition" />
 									</Link>
 									<textarea
 										placeholder={parentId ? "Reply..." : "New post..."}
@@ -87,7 +87,7 @@ export default ({ parentId }: { parentId?: string }) => {
 					)}
 				/>
 				<Button type="submit" className="ml-auto mt-1" disabled={!form.watch("body").length}>
-					{parentId ? "Reply" : "Submit"}
+					{parentId ? "Reply" : "Post"}
 				</Button>
 			</form>
 		</Form>

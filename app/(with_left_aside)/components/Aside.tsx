@@ -7,6 +7,16 @@ import { LuLogIn } from "react-icons/lu"
 import { LuSettings } from "react-icons/lu"
 import { SearchProvider } from "./SearchProvider/SearchProvider"
 import { UserAvatar } from "../../../components/UserAvatar"
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog"
+import { Button, buttonVariants } from "@/components/ui/button"
+import PostForm from "@/components/PostForm"
 
 export const Aside = async () => {
 	const authId = await getAuthId()
@@ -61,13 +71,15 @@ export const Aside = async () => {
 					</Link>
 
 					{authId && (
-						<Link
-							href="/post"
-							className="min-h-[2.25rem] flex justify-center items-center bg-primary hover:bg-primary/90 text-center text-sm text-primary-foreground font-medium rounded-md shadow transition p-2 md:px-4 mt-1"
-						>
-							<LuPen className="md:hidden" />
-							<span className="max-md:hidden">New Post</span>
-						</Link>
+						<Dialog>
+							<DialogTrigger className={`mt-1 ${buttonVariants()}`}>
+								<LuPen className="md:hidden" />
+								<span className="max-md:hidden">New Post</span>
+							</DialogTrigger>
+							<DialogContent className="pt-4 px-0 pb-0">
+								<PostForm />
+							</DialogContent>
+						</Dialog>
 					)}
 				</nav>
 			</div>

@@ -29,6 +29,10 @@ export default model(
 		bio: String,
 		pfp: String,
 		banner: String,
+		following: {
+			type: [String],
+			default: [],
+		},
 		verificationCode: String,
 		privateEmail: {
 			type: Boolean,
