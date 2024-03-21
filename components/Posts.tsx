@@ -72,11 +72,26 @@ export const Post = ({
 		deletePost(postId)
 	}
 
+	const formatDateDifference = (startDate: Date) => {
+		const currentDate = new Date()
+		const differenceInSeconds = Math.floor((currentDate.getTime() - startDate.getTime()) / 1000)
+
+		return differenceInSeconds < 60
+			? `${differenceInSeconds}s`
+			: differenceInSeconds < 3600
+			? `${Math.floor(differenceInSeconds / 60)}m`
+			: differenceInSeconds < 86400
+			? `${Math.floor(differenceInSeconds / 3600)}h`
+			: startDate.getFullYear() === currentDate.getFullYear()
+			? startDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+			: startDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+	}
+
 	return (
 		<>
 			{/* post */}
 			<div
-				className={`group/post relative grid grid-cols-[auto_1fr] items-stretch gap-[.6875rem] items-start hover:bg-[#00000006] text-sm px-5 py-4 transition ${className}`}
+				className={`group/post relative grid grid-cols-[auto_1fr] items-stretch gap-[.6875rem] items-start hover:bg-[#00000006] text-sm px-5 py-3 sm:px-8 py-4 transition ${className}`}
 			>
 				{/* post link */}
 				<Link href={`/${user.username}/${post._id}`} className="cursor-pointer absolute inset-0" />
@@ -100,40 +115,35 @@ export const Post = ({
 					<div className="flex">
 						{/* name */}
 						<UserCardProvider {...{ user }}>
-							<Link href={`/${user.username}`} className="relative">
-								<span className="font-bold hover:underline">{user.fullname}</span>
-								<span className="opacity-70"> @{user.username}</span>
+							<Link href={`/${user.username}`} className="relative flex flex-wrap">
+								<span className="flex-shrink-0 font-bold hover:underline">{user.fullname} </span> 
+								<div className="flex opacity-70">
+									@{user.username}
+									{/* date */}
+									<div className="opacity-70"> · </div>
+									<TooltipProvider>
+										<Tooltip>
+											<TooltipTrigger className="flex-shrink-0 hover:underline whitespace-no-wrap mr-2">
+												<div className="opacity-70">{formatDateDifference(new Date(post.created))}</div>
+											</TooltipTrigger>
+											<TooltipContent>
+												{new Date(post.created).toLocaleTimeString("en-US", {
+													hour: "numeric",
+													minute: "2-digit",
+													hour12: true,
+												}) +
+													" · " +
+													new Date(post.created).toLocaleDateString("en-US", {
+														year: "numeric",
+														month: "short",
+														day: "numeric",
+													})}
+											</TooltipContent>
+										</Tooltip>
+									</TooltipProvider>
+								</div>
 							</Link>
 						</UserCardProvider>
-
-						{/* date */}
-						<div className="opacity-70"> · </div>
-						<TooltipProvider>
-							<Tooltip>
-								<TooltipTrigger className="hover:underline">
-									<div className="opacity-70">
-										{new Date(post.created).toLocaleDateString("en-US", {
-											year: "numeric",
-											month: "short",
-											day: "numeric",
-										})}
-									</div>
-								</TooltipTrigger>
-								<TooltipContent>
-									{new Date(post.created).toLocaleTimeString("en-US", {
-										hour: "numeric",
-										minute: "2-digit",
-										hour12: true,
-									}) +
-										" · " +
-										new Date(post.created).toLocaleDateString("en-US", {
-											year: "numeric",
-											month: "short",
-											day: "numeric",
-										})}
-								</TooltipContent>
-							</Tooltip>
-						</TooltipProvider>
 
 						{/* context menu */}
 						<div className="ml-auto">

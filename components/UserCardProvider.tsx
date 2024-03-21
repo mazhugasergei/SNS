@@ -3,19 +3,11 @@
 import Link from "next/link"
 import { UserAvatar } from "./UserAvatar"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
-import { Button, buttonVariants } from "@/components/ui/button"
 import { getAuthId } from "@/actions/getAuthId"
 import { useEffect, useState } from "react"
+import Follow from "@/components/Follow"
 
-interface IUser {
-	_id: string
-	username: string
-	fullname: string
-	pfp?: string | null
-	bio?: string | null
-}
-
-export default ({ user, children }: { user: IUser; children: React.ReactNode }) => {
+export default ({ user, children }: { user: User; children: React.ReactNode }) => {
 	const [authId, setAuthId] = useState<string | null>()
 
 	useEffect(() => {
@@ -26,12 +18,7 @@ export default ({ user, children }: { user: IUser; children: React.ReactNode }) 
 		<HoverCard>
 			<HoverCardTrigger asChild>{children}</HoverCardTrigger>
 			<HoverCardContent className="relative w-80">
-				{!authId && (
-					<Link href="/log-in" className={`${buttonVariants()} absolute top-4 right-4`}>
-						Follow
-					</Link>
-				)}
-				{authId !== user._id && <Button className="absolute top-4 right-4">Follow</Button>}
+				<Follow {...{ authId, user }} className="absolute top-4 right-4" />
 				<div className="space-y-2">
 					<Link href={`/${user.username}`} className="inline-block hover:brightness-[.85] transition mb-1">
 						<UserAvatar src={user.pfp || ""} />

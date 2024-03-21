@@ -4,12 +4,12 @@ import SettingsAside from "./components/SettingsAside"
 import { ReactNode } from "react"
 
 export const metadata: Metadata = {
-	title: "Settings - Wave"
+	title: "Settings - Wave",
 }
 
 export default ({ children }: { children: ReactNode }) => {
 	return (
-		<main className="flex-1 pt-4 sm:pt-8">
+		<main className="flex-1 pt-4 sm:pt-8 pl-2 sm:pl-8">
 			<div className="flex-1 space-y-6">
 				{/* Top Title */}
 				<div className="space-y-0.5">

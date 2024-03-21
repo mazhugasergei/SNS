@@ -5,7 +5,7 @@ import User from "@/models/User"
 import { getAuthId } from "@/actions/getAuthId"
 import Posts from "@/components/Posts"
 import { Button } from "@/components/ui/button"
-import Follow from "./components/Follow"
+import Follow from "../../../../components/Follow"
 
 export const generateMetadata = async ({ params }: { params: { username: string } }) => {
 	const user = await User.findOne({ username: params.username })
@@ -22,7 +22,6 @@ export const generateMetadata = async ({ params }: { params: { username: string 
 
 export default async ({ params }: { params: { username: string } }) => {
 	const authId = await getAuthId()
-	const authUser = await User.findById(authId)
 	const user = await User.findOne({ username: params.username })
 	if (!user) return <>user not found</>
 	const followers = (await User.find({ following: user._id })).length
@@ -31,14 +30,16 @@ export default async ({ params }: { params: { username: string } }) => {
 		<>
 			{/* profile details */}
 			<div className="contianer border-b">
-				<Banner src={user.banner} />
-				<div className="px-4 pb-3 sm:px-5 sm:pb-6">
+				<div className="px-3 sm:px-5">
+					<Banner src={user.banner} />
+				</div>
+				<div className="px-5 pb-3 sm:px-8 sm:pb-6">
 					<div className="flex justify-between">
 						<UserAvatar
 							src={user.pfp}
 							className="w-[20vw] h-[20vw] sm:w-[8.40625rem] sm:h-[8.40625rem] border-4 border-background mb-3 -mt-[calc(20vw/2)] md:-mt-[4.203125rem]"
 						/>
-						<Follow {...{ authUser, user }} />
+						<Follow {...{ authId, user }} className="mt-2" />
 					</div>
 					<p className="text-2xl sm:text-3xl font-bold">{user.fullname}</p>
 					<p className="opacity-70 text-sm">@{user.username}</p>

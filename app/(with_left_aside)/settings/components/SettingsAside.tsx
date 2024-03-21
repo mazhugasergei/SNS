@@ -24,7 +24,7 @@ export default () => {
 
 	return (
 		<aside className="lg:w-1/5 xl:w-1/6">
-			<nav className="flex flex-wrap gap-2 lg:sticky lg:top-8 lg:flex-col sm:-ml-4">
+			<nav className="flex flex-wrap gap-2 lg:sticky lg:top-8 lg:flex-col">
 				{items.map((item) => (
 					<Link
 						key={item.href}
