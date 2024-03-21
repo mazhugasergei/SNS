@@ -30,14 +30,14 @@ export default async ({ params }: { params: { username: string } }) => {
 		<>
 			{/* profile details */}
 			<div className="contianer border-b">
-				<div className="px-3 sm:px-5">
+				<div className="px-5 sm:px-8">
 					<Banner src={user.banner} />
 				</div>
 				<div className="px-5 pb-3 sm:px-8 sm:pb-6">
 					<div className="flex justify-between">
 						<UserAvatar
 							src={user.pfp}
-							className="w-[20vw] h-[20vw] sm:w-[8.40625rem] sm:h-[8.40625rem] border-4 border-background mb-3 -mt-[calc(20vw/2)] md:-mt-[4.203125rem]"
+							className="w-[20vw] h-[20vw] sm:w-[8.40625rem] sm:h-[8.40625rem] border-4 border-background mb-3 ml-2 md:ml-4 -mt-[calc(20vw/2)] md:-mt-[4.203125rem]"
 						/>
 						<Follow {...{ authId, user }} className="mt-2" />
 					</div>
