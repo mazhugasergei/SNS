@@ -15,6 +15,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { RxDotsHorizontal } from "react-icons/rx"
 import deletePost from "@/actions/deletePost"
 import PostForm from "@/components/PostForm"
+import { useFormatDateDifference } from "@/hooks/useFormatDateDifferece"
 
 export const Post = ({
 	post,
@@ -72,21 +73,6 @@ export const Post = ({
 		deletePost(postId)
 	}
 
-	const formatDateDifference = (startDate: Date) => {
-		const currentDate = new Date()
-		const differenceInSeconds = Math.floor((currentDate.getTime() - startDate.getTime()) / 1000)
-
-		return differenceInSeconds < 60
-			? `${differenceInSeconds}s`
-			: differenceInSeconds < 3600
-			? `${Math.floor(differenceInSeconds / 60)}m`
-			: differenceInSeconds < 86400
-			? `${Math.floor(differenceInSeconds / 3600)}h`
-			: startDate.getFullYear() === currentDate.getFullYear()
-			? startDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })
-			: startDate.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
-	}
-
 	return (
 		<>
 			{/* post */}
@@ -124,7 +110,7 @@ export const Post = ({
 									<TooltipProvider>
 										<Tooltip>
 											<TooltipTrigger className="flex-shrink-0 hover:underline whitespace-no-wrap mr-2">
-												<div className="opacity-70">{formatDateDifference(new Date(post.created))}</div>
+												<div className="opacity-70">{useFormatDateDifference(new Date(post.created))}</div>
 											</TooltipTrigger>
 											<TooltipContent>
 												{new Date(post.created).toLocaleTimeString("en-US", {

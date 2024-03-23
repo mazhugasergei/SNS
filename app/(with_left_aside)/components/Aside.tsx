@@ -5,8 +5,8 @@ import { LuPen, LuUser2, LuHome, LuSearch, LuMessageSquare } from "react-icons/l
 import User from "@/models/User"
 import { LuLogIn } from "react-icons/lu"
 import { LuSettings } from "react-icons/lu"
-import { SearchProvider } from "./SearchProvider/SearchProvider"
-import { UserAvatar } from "../../../components/UserAvatar"
+import UsersSearchProvider from "@/components/UsersSearchProvider"
+import { UserAvatar } from "@/components/UserAvatar"
 import {
 	Dialog,
 	DialogContent,
@@ -53,12 +53,12 @@ export const Aside = async () => {
 						<span {...titleStyle}>Messages</span>
 					</Link>
 
-					<SearchProvider>
+					<UsersSearchProvider>
 						<button {...buttonStyle}>
 							<LuSearch {...iconStyle} />
 							<span {...titleStyle}>Search</span>
 						</button>
-					</SearchProvider>
+					</UsersSearchProvider>
 
 					<Link href={`/${username ?? "log-in"}`} {...buttonStyle}>
 						<LuUser2 {...iconStyle} />

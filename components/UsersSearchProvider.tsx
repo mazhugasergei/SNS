@@ -1,35 +1,44 @@
 "use client"
-import { searchUsers } from "./actions/searchUsers"
+
+import { searchUsers } from "../actions/searchUsers"
 import { CommandDialog, CommandInput } from "@/components/ui/command"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
-import { UserAvatar } from "../../../../components/UserAvatar"
+import { UserAvatar } from "./UserAvatar"
 
-type User = {
-	_id: string
-	pfp?: string | null
-	fullname: string
-	username: string
-}
-
-export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
+export default ({ multiselect = false, children }: { multiselect?: boolean; children: React.ReactNode }) => {
 	const [searchOpen, setSearchOpen] = useState(false)
-	const [value, setSearchValue] = useState<string>()
+	const [value, setSearchValue] = useState("")
 	const [defaultUsers, setDefaultUsers] = useState<User[]>()
 	const [users, setUsers] = useState<User[]>()
 	const [pending, setPending] = useState(false)
 	let timeout = useRef<NodeJS.Timeout>()
+	// multiselect
+	const [selectedItems, setSelectedItems] = useState<string[]>([])
 
-	// getting default users
 	useEffect(() => {
+		// getting default users
 		setPending(true)
-		searchUsers().then((res) => {
-			setDefaultUsers(res)
+		searchUsers().then((data) => {
+			setDefaultUsers(data)
 			setPending(false)
 		})
 	}, [])
 
 	useEffect(() => {
+		// reset search on search close
+		if (!searchOpen) {
+			setTimeout(() => {
+				setSearchValue("")
+				setUsers(undefined)
+				defaultUsers && setPending(false)
+				clearTimeout(timeout.current)
+			}, 250)
+		}
+	}, [searchOpen])
+
+	useEffect(() => {
+		// search users
 		clearTimeout(timeout.current)
 		if (value) {
 			setPending(true)
@@ -45,39 +54,28 @@ export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
 		}
 	}, [value])
 
-	const categoryClasses = `
-    text-muted-foreground
-    text-xs
-    px-2
-    py-1.5
-  `
-
-	const itemClasses = `
-    cursor-pointer
-    flex
-    items-center
-    gap-2
-    text-sm
-    rounded-sm
-    hover:bg-accent
-    px-2
-    py-2
-  `
-
-	const handleItemClick = (participants: string[]) => {
-		setSearchOpen(false)
+	const styles = {
+		category: `text-muted-foreground text-xs px-2 py-1.5`,
+		item: `cursor-pointer select-none flex items-center gap-2 text-sm rounded-sm hover:bg-accent p-2`,
 	}
 
-	useEffect(() => {
-		if (!searchOpen) {
-			setTimeout(() => {
-				setSearchValue(undefined)
-				setUsers(undefined)
-				defaultUsers && setPending(false)
-				clearTimeout(timeout.current)
-			}, 250)
+	const handleItemClick = (selectedItem: User) => {
+		if (multiselect) {
+			if (selectedItems.includes(selectedItem._id)) {
+				setSelectedItems(selectedItems.filter((item) => item !== selectedItem._id))
+			} else {
+				setSelectedItems([selectedItem._id, ...selectedItems])
+			}
+		} else {
+			setSearchOpen(false)
+			window.location.href = `/${selectedItem.username}`
 		}
-	}, [searchOpen])
+	}
+
+	////
+	useEffect(() => {
+		console.log(selectedItems)
+	}, [selectedItems])
 
 	return (
 		<>
@@ -93,18 +91,13 @@ export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
 					{/* No value */}
 					{!pending && !value && defaultUsers && (
 						<>
-							<p className={categoryClasses}>People</p>
+							<p className={styles.category}>People</p>
 							{defaultUsers.map((user) => (
-								<Link
-									href={`/${user.username}`}
-									className={itemClasses}
-									onClick={() => handleItemClick([user._id])}
-									key={user.username}
-								>
-									<UserAvatar src={user.pfp || ""} className="w-7 h-7" />
+								<div className={styles.item} onClick={() => handleItemClick(user)} key={user.username}>
+									<UserAvatar src={user.pfp} className="w-7 h-7" selected={selectedItems.includes(user._id)} />
 									{user.fullname}
 									<span className="opacity-[.7] text-xs">{user.username}</span>
-								</Link>
+								</div>
 							))}
 						</>
 					)}
@@ -115,18 +108,13 @@ export const SearchProvider = ({ children }: { children: React.ReactNode }) => {
 					{/* Yes results */}
 					{!pending && value && !!users?.length && (
 						<>
-							<p className={categoryClasses}>People</p>
+							<p className={styles.category}>People</p>
 							{users.map((user) => (
-								<Link
-									href={`/${user.username}`}
-									className={itemClasses}
-									onClick={() => handleItemClick([user._id])}
-									key={user.username}
-								>
+								<div className={styles.item} onClick={() => handleItemClick(user)} key={user.username}>
 									<UserAvatar src={user.pfp || ""} className="w-7 h-7" />
 									{user.fullname}
 									<span className="opacity-[.7] text-xs">{user.username}</span>
-								</Link>
+								</div>
 							))}
 						</>
 					)}
