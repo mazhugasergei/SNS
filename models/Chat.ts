@@ -10,14 +10,11 @@ export default model(
 			required: true,
 			default: new Types.ObjectId().toString(),
 		},
-		name: {
-			type: String,
-			required: true,
-		},
+		name: String,
 		image: String,
 		participants: {
 			type: [String],
-			default: [],
+			required: true,
 		},
 		lastMessage: String,
 		lastMessageTime: Date,

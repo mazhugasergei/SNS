@@ -18,7 +18,11 @@ export const Chats = async ({ className }: { className?: string }) => {
 		for (const chat of chats) {
 			// chat name
 			const chatName =
-				chat.name || (await User.find({ _id: chat.participants })).map((item) => item.fullname).join(", ")
+				chat.name ||
+				(await User.find({ _id: chat.participants }))
+					.filter(({ _id }) => _id !== authId)
+					.map(({ fullname }) => fullname)
+					.join(", ")
 			// chat image
 			const chatImage =
 				chat.participants.length > 2 ? chat.image : await User.findById(chat.participants[1]).then((data) => data?.pfp)
@@ -47,7 +51,7 @@ export const Chats = async ({ className }: { className?: string }) => {
 						<UserAvatar src={chat.image} className="w-8 h-8" />
 						<div className="flex-1">
 							<div className="flex items-center">
-								<div className="line-clamp-1">{chat.name}</div>
+								<div className="truncate">{chat.name}</div>
 								{chat.lastMessageTime && (
 									<div className="text-xs opacity-80 whitespace-nowrap">
 										 · {useFormatDateDifference(chat.lastMessageTime)}

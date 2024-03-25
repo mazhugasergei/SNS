@@ -9,7 +9,7 @@ import UserCardProvider from "./UserCardProvider"
 import Link from "next/link"
 import { UserAvatar } from "./UserAvatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { RxDotsHorizontal } from "react-icons/rx"
+import { LuMoreHorizontal } from "react-icons/lu"
 import updatePostLike from "@/actions/updatePostLike"
 import deletePost from "@/actions/deletePost"
 import getPost from "@/actions/getPost"
@@ -76,7 +76,7 @@ export default ({ username, postId }: { username: string; postId: string }) => {
 								{authId === user._id && (
 									<DropdownMenu>
 										<DropdownMenuTrigger className="p-2 -m-2">
-											<RxDotsHorizontal />
+											<LuMoreHorizontal />
 										</DropdownMenuTrigger>
 										<DropdownMenuContent className="mr-2">
 											<DropdownMenuItem className="cursor-pointer" onClick={() => delPost(postId)}>

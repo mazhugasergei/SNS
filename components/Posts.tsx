@@ -12,7 +12,7 @@ import { LuHeart, LuMessageCircle } from "react-icons/lu"
 import { getAuthId } from "@/actions/getAuthId"
 import updatePostLike from "@/actions/updatePostLike"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { RxDotsHorizontal } from "react-icons/rx"
+import { LuMoreHorizontal } from "react-icons/lu"
 import deletePost from "@/actions/deletePost"
 import PostForm from "@/components/PostForm"
 import { useFormatDateDifference } from "@/hooks/useFormatDateDifferece"
@@ -136,7 +136,7 @@ export const Post = ({
 							{authId === user._id && (
 								<DropdownMenu>
 									<DropdownMenuTrigger className="relative md:opacity-0 group-hover/post:opacity-100 focus:opacity-100 transition p-2 -m-2">
-										<RxDotsHorizontal />
+										<LuMoreHorizontal />
 									</DropdownMenuTrigger>
 									<DropdownMenuContent className="mr-2">
 										<DropdownMenuItem className="cursor-pointer" onClick={() => delPost(post._id)}>
