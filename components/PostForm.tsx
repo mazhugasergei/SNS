@@ -8,11 +8,12 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import newPost from "../actions/newPost"
 import { useFormError } from "@/hooks/useFormError"
 import { UserAvatar } from "@/components/UserAvatar"
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { getAuthId } from "@/actions/getAuthId"
 import getUser from "@/actions/getUser"
 import Link from "next/link"
 import getPosts from "@/actions/getPosts"
+import { ReloadIcon } from "@radix-ui/react-icons"
 
 const formSchema = z.object({
 	body: z.string().min(1).max(300),
