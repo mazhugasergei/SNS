@@ -14,7 +14,6 @@ export const metadata: Metadata = {
 
 export default async ({ children }: { children: React.ReactNode }) => {
 	// connect to the db
-	console.log(process.env.MONGODB_URI!)
 	await mongoose.connect(process.env.MONGODB_URI!).then(() => console.log("connected to db"))
 
 	return (
