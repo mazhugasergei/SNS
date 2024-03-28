@@ -20,7 +20,7 @@ export default async ({ limit, skip, ...query }: GetPosts) => {
 		.skip(skip || 0)
 		.limit(limit || 1)
 
-	const profiles = await User.find({ _id: posts.map(({ authorId }) => authorId) }, "_id fullname pfp")
+	const profiles = await User.find({ _id: posts.map(({ authorId }) => authorId) }, "_id username fullname pfp")
 
 	const res = []
 	for (const post of posts) {
