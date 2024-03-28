@@ -1,4 +1,4 @@
-interface User {
+type User = {
 	_id: string
 	username: string
 	fullname: string
@@ -7,7 +7,7 @@ interface User {
 	following: string[]
 }
 
-interface Post {
+type Post = {
 	_id: string
 	body: string
 	likes: string[]
@@ -16,14 +16,14 @@ interface Post {
 	created: Date
 }
 
-interface ExtendedPost {
-	user: User | null
+type ExtendedPost = {
 	post: Post
+	user: User | null
 	parentPost: Post | null
 	parentPostUser: User | null
 }
 
-interface Chat {
+type Chat = {
 	_id: string
 	name: string
 	image?: string | null
@@ -31,4 +31,19 @@ interface Chat {
 	lastMessage?: string | null
 	lastMessageTime?: Date | null
 	created: Date
+}
+
+type Message = {
+	_id: string
+	senderId: string
+	chatId: string
+	body: string
+	created: Date
+}
+
+type ExtendedMessage = {
+	message: Message
+	user: User | null
+	parentMessage: Message | null
+	parentMessageUser: User | null
 }

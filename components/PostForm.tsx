@@ -87,7 +87,7 @@ export default ({ parentId, setPosts }: { parentId?: string; setPosts?: Dispatch
 					)}
 				/>
 				<Button type="submit" className="ml-auto mt-1" disabled={!form.watch("body").length}>
-					{parentId ? "Reply" : "Post"}
+					{form.formState.isSubmitting ? <ReloadIcon className="w-4 h-4 animate-spin" /> : parentId ? "Reply" : "Post"}
 				</Button>
 			</form>
 		</Form>

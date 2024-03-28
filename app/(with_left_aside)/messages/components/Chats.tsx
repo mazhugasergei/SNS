@@ -8,7 +8,7 @@ import { useFormatDateDifference } from "@/hooks/useFormatDateDifferece"
 import UsersSearchProvider from "@/components/UsersSearchProvider"
 import { UserAvatar } from "@/components/UserAvatar"
 
-export const Chats = async ({ className }: { className?: string }) => {
+export const Chats = async ({ chatId, className }: { chatId?: string; className?: string }) => {
 	const authId = await getAuthId()
 	if (!authId) redirect("/log-in")
 
@@ -37,15 +37,17 @@ export const Chats = async ({ className }: { className?: string }) => {
 	if (!chats) return <>no chats</>
 
 	return (
-		<div className={`${className} flex flex-col p-4`}>
+		<div className={`${className} flex flex-col py-4`}>
 			<UsersSearchProvider multiselect>
-				<Button className="mb-2">New chat</Button>
+				<Button className="mx-2 mb-2">New chat</Button>
 			</UsersSearchProvider>
 			{chats.map((chat) => {
 				return (
 					<Link
 						href={`/messages/${chat._id}`}
-						className="cursor-pointer flex items-center gap-2 text-sm rounded-sm hover:bg-accent px-2 py-2 transition"
+						className={`cursor-pointer flex items-center gap-2 text-sm hover:bg-accent px-4 py-2 transition ${
+							chatId === chat._id ? "bg-accent border-r-2 border-primary" : ""
+						}`}
 						key={chat._id}
 					>
 						<UserAvatar src={chat.image} className="w-8 h-8" />

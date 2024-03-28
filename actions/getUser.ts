@@ -3,7 +3,7 @@
 import User from "@/models/User"
 
 export default async (query: { _id?: string; username?: string }) => {
-	const user = await User.findOne(query)
+	const user = await User.findOne(query, "-password")
 	if (!user) throw "User not found"
 	return JSON.parse(JSON.stringify(user))
 }

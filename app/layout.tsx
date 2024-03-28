@@ -5,9 +5,6 @@ import { Toaster } from "@/components/ui/toaster"
 import ThemeProvider from "@/components/ThemeProvider"
 import mongoose from "mongoose"
 
-// connect to the db
-mongoose.connect(process.env.MONGODB_URI!).then(() => console.log("connected to db"))
-
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
@@ -15,7 +12,10 @@ export const metadata: Metadata = {
 	description: "Mazhuga Sergei's SNS graduation thesis",
 }
 
-export default ({ children }: { children: React.ReactNode }) => {
+export default async ({ children }: { children: React.ReactNode }) => {
+	// connect to the db
+	await mongoose.connect(process.env.MONGODB_URI!).then(() => console.log("connected to db"))
+
 	return (
 		<html lang="en" /* >>> */ suppressHydrationWarning={true} /* <<< */>
 			<body className={`${inter.className} relative`}>

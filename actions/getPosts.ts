@@ -3,24 +3,24 @@
 import Post from "@/models/Post"
 import User from "@/models/User"
 
-interface ISearchQuery {
+type SearchQuery = {
 	_id?: string
 	authorId?: string[]
 	parentId?: string
 }
 
-interface IGetPosts extends ISearchQuery {
+type GetPosts = SearchQuery & {
 	limit?: number
 	skip?: number
 }
 
-export default async ({ limit, skip, ...query }: IGetPosts) => {
+export default async ({ limit, skip, ...query }: GetPosts) => {
 	const posts = await Post.find(query)
 		.sort({ created: -1 })
 		.skip(skip || 0)
 		.limit(limit || 1)
 
-	const profiles = await User.find({ _id: posts.map(({ authorId }) => authorId) })
+	const profiles = await User.find({ _id: posts.map(({ authorId }) => authorId) }, "_id fullname pfp")
 
 	const res = []
 	for (const post of posts) {
