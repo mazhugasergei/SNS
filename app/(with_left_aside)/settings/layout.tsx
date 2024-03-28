@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default ({ children }: { children: ReactNode }) => {
 	return (
-		<main className="flex-1 pt-4 sm:pt-8 pl-2 sm:pl-8">
+		<main className="flex-1 pt-4 sm:pt-8 px-2 sm:px-8">
 			<div className="flex-1 space-y-6">
 				{/* Top Title */}
 				<div className="space-y-0.5">
