@@ -18,7 +18,7 @@ const formSchema = zod.object({
 	password: zod
 		.string()
 		.min(8, { message: "Password must be at least 8 characters" })
-		.max(50, { message: "Password must contain at most 50 characters" })
+		.max(50, { message: "Password must contain at most 50 characters" }),
 })
 
 export const FormClientComponent = () => {
@@ -26,8 +26,8 @@ export const FormClientComponent = () => {
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			email: "ghbdtnghbdtn8@gmail.com",
-			password: "12345678"
-		}
+			password: "12345678",
+		},
 	})
 
 	const onSubmit = async (data: zod.infer<typeof formSchema>) => {

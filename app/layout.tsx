@@ -18,7 +18,7 @@ export default async ({ children }: { children: React.ReactNode }) => {
 
 	return (
 		<html lang="en" /* >>> */ suppressHydrationWarning={true} /* <<< */>
-			<body className={`${inter.className} relative`}>
+			<body className={`container ${inter.className} relative`}>
 				<ThemeProvider attribute="class" disableTransitionOnChange>
 					{children}
 					<Toaster />

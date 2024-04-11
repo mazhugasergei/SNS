@@ -11,6 +11,8 @@ export const logIn = async (email: string, password: string) => {
 	// does the user exist
 	const user = await User.findOne(username ? { username } : { email })
 	if (!user) throw "[email]: User doesn't exist"
+	// reject if not verified
+	if (user.verificationCode) throw "[email]: Verify your email first"
 	// check if the password is correct
 	const valid = await bcrypt.compare(password, user.password)
 	if (!valid) throw "[password]: Incorrect password"

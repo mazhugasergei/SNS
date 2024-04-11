@@ -7,16 +7,21 @@ import { cookies } from "next/headers"
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
 
-export const signUp = async (email: string, username: string, fullname: string, password: string) => {
+interface SignUp {
+	email: string
+	username: string
+	fullname: string
+	password: string
+}
+
+export const signUp = async ({ email, username, fullname, password }: SignUp) => {
 	// if the email is in use
-	await User.findOne({ email }).then((user) => {
-		if (user) throw "[email]: This email is already in use."
-	})
+	const emailIsInUse = await User.findOne({ email })
+	if (emailIsInUse) throw "[email]: This email is already in use."
 
 	// if the username is in use
-	await User.findOne({ username }).then((user) => {
-		if (user) throw "[username]: This username is already in use."
-	})
+	const usernameIsInUse = await User.findOne({ username })
+	if (usernameIsInUse) throw "[username]: This username is already in use."
 
 	// create verification url code
 	const verificationCode = await bcrypt.hash(
@@ -26,15 +31,14 @@ export const signUp = async (email: string, username: string, fullname: string, 
 		12
 	)
 
-	// create user object
-	const user = {
-		_id: new mongoose.Types.ObjectId().toString(),
+	// create not yet verified user document
+	const user = await User.create({
 		email,
 		username,
 		fullname,
 		password: await bcrypt.hash(password, 12),
 		verificationCode,
-	}
+	})
 
 	// create transporter
 	const transporter = nodemailer.createTransport({
@@ -63,15 +67,6 @@ export const signUp = async (email: string, username: string, fullname: string, 
       </body>
     `,
 	})
-
-	// create not yet verified user document
-	await User.create(user)
-
-	// create token
-	const token = jwt.sign({ _id: user._id, password: user.password }, process.env.JWT_SECRET || "", { expiresIn: "30d" })
-
-	// save token
-	cookies().set("token", token, { expires: new Date(Date.now() + 2592000000) })
 
 	return { ok: true }
 }

@@ -3,7 +3,7 @@ import RightAside from "./components/RightAside"
 import { ReactNode } from "react"
 
 export const metadata: Metadata = {
-	title: "Home - Wave"
+	title: "Home - Wave",
 }
 
 export default ({ children }: { children: ReactNode }) => {

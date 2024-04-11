@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { useFormError } from "@/hooks/useFormError"
 import { toast } from "@/components/ui/use-toast"
+import { useRouter } from "next/navigation"
 
 const formSchema = zod.object({
 	email: zod
@@ -42,28 +43,29 @@ const formSchema = zod.object({
 })
 
 export const FormClientComponent = () => {
+	const router = useRouter()
+
 	const form = useForm<zod.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			email: "ghbdtnghbdtn8@gmail.com",
-			username: "mazhugasergei",
+			email: "matsudamakoto23.1@gmail.com",
+			username: "matsudamakoto",
 			password: "12345678",
-			fullname: "Mazhuga Sergei",
+			fullname: "Matsuda Makoto",
 		},
 	})
 
 	const onSubmit = async (data: zod.infer<typeof formSchema>) => {
-		const { email, username, fullname, password } = data
-		await signUp(email, username, fullname, password)
-			.then((res) => {
-				if (res.ok) {
-					form.reset()
+		await signUp(data)
+			.then(({ ok }) => {
+				if (ok) {
+					form.reset() // clear the form
+					router.push("/log-in")
 					toast({
-						title: "Welcome aboard! ⛴️",
-						description:
-							"Don't forget to verify your email, it helps to ensure that your account is secure. Please note that if you do not verify the email during 1 hour, your account will be deleted permanently.",
-						duration: 20000,
-					})
+						title: "Verification email sent ✉️",
+						description: "Please verify your email address before logging in.",
+						duration: 10000,
+					}) // show toast
 				}
 			})
 			.catch((err) => useFormError(form, err, onSubmit))

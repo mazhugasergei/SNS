@@ -1,4 +1,6 @@
+import { buttonVariants } from "@/components/ui/button"
 import User from "@/models/User"
+import Link from "next/link"
 import { redirect } from "next/navigation"
 
 export default async ({ searchParams }: { searchParams: { _id: string; code: string } }) => {
@@ -12,9 +14,12 @@ export default async ({ searchParams }: { searchParams: { _id: string; code: str
 	})().catch(() => redirect("/"))
 
 	return (
-		<>
-			<h1 className="text-4xl font-bold tracking-tight mb-2">Verified successfully!</h1>
+		<div className="space-y-2">
+			<h1 className="text-4xl font-bold tracking-tight">Verified successfully!</h1>
 			<p className="text-sm font-medium">Thanks for verifying your email.</p>
-		</>
+			<Link href="/log-in" className={buttonVariants()}>
+				Log in
+			</Link>
+		</div>
 	)
 }
